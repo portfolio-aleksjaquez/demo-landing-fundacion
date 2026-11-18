@@ -1,15 +1,11 @@
 ---
-import "@fontsource/jost/300.css";
-import "@fontsource/jost/400.css";
-import "@fontsource/jost/500.css";
-import "@fontsource/cormorant-garamond/600.css";
-import "@fontsource/cormorant-garamond/700.css";
+import "@fontsource-variable/overpass";
 import "@/styles/global.css";
 import NavBar from "@/components/NavBar.astro";
 import Footer from "@/components/Footer.astro";
 import { ui, withBase, type LanguageKeys } from "@/i18n/ui";
 import { ClientRouter } from "astro:transitions";
-import BirdAnimation from "@/components/BirdAnimation.astro";
+import TrailPath from "@/components/TrailPath.astro";
 
 interface Props {
     lang: LanguageKeys;
@@ -59,7 +55,7 @@ const structuredData = {
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="description" content={t.a11y.metaDescription} />
-        <meta name="theme-color" content="#405950" />
+        <meta name="theme-color" content="#2b2f9e" />
         <title>{title}</title>
         <link rel="canonical" href={canonicalUrl} />
         {langAlternates.map((alternate) => (
@@ -95,12 +91,12 @@ const structuredData = {
     </head>
     <body class="relative">
         <a href="#main-content" class="skip-to-content">{t.a11y.skipToContent}</a>
-        <NavBar texts={t.nav} a11yTexts={t.a11y} />
-        <main id="main-content" class="pt-20 bg-(--bg-tertiary)">
+        <NavBar texts={t.nav} a11yTexts={t.a11y} lang={lang} />
+        <main id="main-content" class="pt-17">
             <slot />
         </main>
-        <Footer texts={t.footer} a11yTexts={t.a11y} />
-        <BirdAnimation />
+        <Footer texts={t.footer} postEvent={t.postEvent} a11yTexts={t.a11y} />
+        <TrailPath />
     </body>
 </html>
 

@@ -1,24 +1,22 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import Hero from "@/components/Hero.astro";
 import Agenda from "@/components/Agenda.astro";
 import Countdown from "@/components/Countdown.astro";
-import FAQ from "@/components/FAQ.astro";
-import Hero from "@/components/Hero.astro";
-import Organizations from "@/components/Organizations.astro";
 import About from "@/components/About.astro";
-import Soon from "@/components/Soon.astro";
+import Organizations from "@/components/Organizations.astro";
+import FAQ from "@/components/FAQ.astro";
 
 import { ui } from "@/i18n/ui";
 const lang = "es";
 const t = ui[lang];
 ---
 
-<Layout lang={lang} title={`${t["page.title"]} - Fundación Vereda Clara`}>
+<Layout lang={lang} title={`${t.og.title}`}>
     <Hero texts={t.hero} a11yTexts={t.a11y} />
-    <About texts={t.about} a11yTexts={t.a11y} />
-    <Countdown texts={t.countdown} a11yTexts={t.a11y} />
     <Agenda texts={t.agenda} a11yTexts={t.a11y} />
+    <Countdown texts={t.countdown} a11yTexts={t.a11y} />
+    <About texts={t.about} a11yTexts={t.a11y} />
     <Organizations texts={t.organizations} a11yTexts={t.a11y} />
     <FAQ texts={t.faq} a11yTexts={t.a11y} />
-    <Soon texts={t.postEvent} a11yTexts={t.a11y} />
 </Layout>

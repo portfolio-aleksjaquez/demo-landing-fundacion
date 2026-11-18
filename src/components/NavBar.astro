@@ -1,162 +1,285 @@
 ---
-import { withBase, type NavTexts, type A11yTexts } from "@/i18n/ui";
+import { withBase, type NavTexts, type A11yTexts, type LanguageKeys } from "@/i18n/ui";
 
 interface Props {
     texts: NavTexts;
     a11yTexts: A11yTexts;
+    lang: LanguageKeys;
 }
 
-const { texts, a11yTexts } = Astro.props as Props;
+const { texts, a11yTexts, lang } = Astro.props as Props;
+
+const links = [
+    { href: "#agenda", label: texts.agenda },
+    { href: "#sede", label: texts.countdown },
+    { href: "#sobre", label: texts.about },
+    { href: "#organizaciones", label: texts.organizations },
+    { href: "#faq", label: texts.faq },
+];
+
+const langs: { code: LanguageKeys; label: string; aria: string }[] = [
+    { code: "es", label: "ES", aria: a11yTexts.switchToEs },
+    { code: "en", label: "EN", aria: a11yTexts.switchToEn },
+    { code: "pt", label: "PT", aria: a11yTexts.switchToPt },
+];
 ---
 
-<header class="fixed w-full z-50 flex justify-end md:justify-between items-center px-6 md:px-12 py-4 pb-8 brightness-95" role="banner">
-    <nav class="hidden md:flex md:gap-4 font-medium lg:gap-16" aria-label={a11yTexts.navMain}>
-        <a href="#sobre" class="hover:text-gray-500 transition">{texts.about}</a>
-        <a href="#countdown" class="hover:text-gray-500 transition">{texts.countdown}</a>
-        <a href="#agenda" class="hover:text-gray-500 transition">{texts.agenda}</a>
-        <a href="#organizaciones" class="hover:text-gray-500 transition md:whitespace-nowrap">{texts.organizations}</a>
-        <a href="#faq" class="hover:text-gray-500 transition">{texts.faq}</a>
-    </nav>
-    <div class="flex items-center gap-4">
-        <div class="flex gap-2">
-            <a href={withBase("es/")} class="lang-link hover:text-gray-500 transition" aria-label={a11yTexts.switchToEs}>ES</a>
-            <span aria-hidden="true">|</span>
-            <a href={withBase("en/")} class="lang-link hover:text-gray-500 transition" aria-label={a11yTexts.switchToEn}>EN</a>
-            <span aria-hidden="true">|</span>
-            <a href={withBase("pt/")} class="lang-link hover:text-gray-500 transition" aria-label={a11yTexts.switchToPt}>PT</a>
+<header class="site-header" role="banner">
+    <div class="site-header__inner">
+        <a href="#inicio" class="brand" aria-label={a11yTexts.homeLink}>
+            <svg class="brand__mark" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+                <rect width="40" height="40" rx="9" fill="var(--anil)"></rect>
+                <circle cx="27" cy="13" r="6" fill="var(--cempasuchil)"></circle>
+                <path d="M12 40 C8 32 24 30 20 24 C17 20 20 17 25 16" fill="none" stroke="var(--cal)" stroke-width="4.5" stroke-linecap="round"></path>
+            </svg>
+            <span class="brand__name">{texts.title}</span>
+        </a>
+
+        <nav class="site-nav" aria-label={a11yTexts.navMain}>
+            {links.map((link) => <a href={link.href}>{link.label}</a>)}
+        </nav>
+
+        <div class="site-header__tools">
+            <div class="lang-switch" role="group" aria-label={texts.languages}>
+                {
+                    langs.map((item) => (
+                        <a
+                            href={withBase(`${item.code}/`)}
+                            class="lang-link"
+                            lang={item.code}
+                            aria-label={item.aria}
+                            aria-current={item.code === lang ? "page" : undefined}
+                        >
+                            {item.label}
+                        </a>
+                    ))
+                }
+            </div>
+            <button id="hamburger-btn" class="menu-btn" aria-label={a11yTexts.openMenu} aria-expanded="false" aria-controls="mobile-menu" data-open-label={a11yTexts.openMenu} data-close-label={a11yTexts.closeMenu}>
+                <span class="menu-btn__line"></span>
+                <span class="menu-btn__line"></span>
+            </button>
         </div>
-        <button
-            id="hamburger-btn"
-            class="md:hidden flex flex-col justify-center items-center gap-1.25 w-8 h-8 cursor-pointer"
-            aria-label={a11yTexts.openMenu}
-            aria-expanded="false"
-            aria-controls="mobile-menu"
-        >
-            <span class="hamburger-line block w-6 h-0.5 bg-(--color-primary) transition-all duration-300"></span>
-            <span class="hamburger-line block w-6 h-0.5 bg-(--color-primary) transition-all duration-300"></span>
-            <span class="hamburger-line block w-6 h-0.5 bg-(--color-primary) transition-all duration-300"></span>
-        </button>
+    </div>
+
+    <div id="mobile-menu" class="mobile-menu" hidden>
+        <nav aria-label={a11yTexts.navMobile}>
+            <ul>
+                {
+                    links.map((link) => (
+                        <li>
+                            <a href={link.href} class="mobile-link">
+                                {link.label}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ul>
+        </nav>
     </div>
 </header>
 
-<div id="mobile-menu" class="fixed inset-0 z-40 hidden">
-    <div id="mobile-menu-backdrop" class="absolute inset-0 bg-black/50"></div>
-    <nav class="mobile-nav absolute right-0 top-0 h-full w-64 flex flex-col items-start gap-6 pt-24 px-8 translate-x-full transition-transform duration-300" aria-label={a11yTexts.navMobile}>
-        <a href="#sobre" class="mobile-link hover:text-gray-500 transition text-sm">{texts.about}</a>
-        <a href="#countdown" class="mobile-link hover:text-gray-500 transition text-sm">{texts.countdown}</a>
-        <a href="#agenda" class="mobile-link hover:text-gray-500 transition text-sm">{texts.agenda}</a>
-        <a href="#organizaciones" class="mobile-link hover:text-gray-500 transition text-sm">{texts.organizations}</a>
-        <a href="#faq" class="mobile-link hover:text-gray-500 transition text-sm">{texts.faq}</a>
-    </nav>
-</div>
-
 <style>
-    a {
+    .site-header {
+        position: fixed;
+        inset: 0 0 auto 0;
+        z-index: 50;
+        background-color: var(--cal);
+        border-bottom: 1px solid var(--line);
+    }
+
+    .site-header__inner {
+        width: var(--wrap);
+        margin-inline: auto;
+        height: 4.25rem;
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.7rem;
         text-decoration: none;
+        font-weight: 800;
+        letter-spacing: -0.015em;
+        font-size: 1.05rem;
+        white-space: nowrap;
     }
 
-    header {
-        background-image: url("../assets/img/nav-bar.svg");
-        background-size: 100% 100%;
-        background-position: center;
-        font-size: clamp(1rem, 1.6vw, 2rem);
+    .brand__mark {
+        width: 2.25rem;
+        height: 2.25rem;
+        flex: none;
     }
 
-    .mobile-nav {
-        background-color: var(--bg-tertiary);
+    .site-nav {
+        display: none;
+        gap: clamp(1rem, 2.2vw, 2.25rem);
+        margin-left: auto;
+        font-weight: 600;
+        font-size: 0.98rem;
+
+        a {
+            text-decoration: none;
+            padding-block: 0.4rem;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.2s ease;
+
+            &:hover {
+                border-color: var(--cempasuchil);
+            }
+        }
+    }
+
+    .site-header__tools {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-left: auto;
+    }
+
+    .lang-switch {
+        display: flex;
+        border: 1.5px solid var(--anil);
+        border-radius: 999px;
+        padding: 2px;
+    }
+
+    .lang-link {
+        display: grid;
+        place-items: center;
+        min-width: 2.4rem;
+        min-height: 2rem;
+        padding-inline: 0.5rem;
+        border-radius: 999px;
+        font-size: 0.82rem;
+        font-weight: 750;
+        letter-spacing: 0.04em;
+        text-decoration: none;
+        color: var(--anil);
+
+        &:hover {
+            background-color: var(--jacaranda-soft);
+        }
+
+        &[aria-current="page"] {
+            background-color: var(--anil);
+            color: var(--cal);
+        }
+    }
+
+    .menu-btn {
+        display: grid;
+        place-content: center;
+        gap: 6px;
+        width: 2.75rem;
+        height: 2.75rem;
+        border-radius: 999px;
+        background-color: var(--anil);
+        cursor: pointer;
+    }
+
+    .menu-btn__line {
+        display: block;
+        width: 1.1rem;
+        height: 2px;
+        background-color: var(--cal);
+        transition: transform 0.25s ease;
+    }
+
+    .menu-btn[aria-expanded="true"] .menu-btn__line:nth-child(1) {
+        transform: translateY(4px) rotate(45deg);
+    }
+
+    .menu-btn[aria-expanded="true"] .menu-btn__line:nth-child(2) {
+        transform: translateY(-4px) rotate(-45deg);
+    }
+
+    .mobile-menu {
+        border-top: 1px solid var(--line);
+        background-color: var(--cal);
+
+        ul {
+            width: var(--wrap);
+            margin-inline: auto;
+            padding-block: 0.75rem 1.5rem;
+        }
+
+        li + li {
+            border-top: 1px solid var(--line);
+        }
     }
 
     .mobile-link {
-        font-family: var(--font-display);
-        font-weight: 700;
+        display: block;
+        padding-block: 0.9rem;
+        font-size: 1.35rem;
+        font-weight: 750;
+        text-decoration: none;
     }
 
-    .hamburger-open .hamburger-line:nth-child(1) {
-        transform: translateY(7px) rotate(45deg);
+    @media (max-width: 479px) {
+        .brand__name {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip-path: inset(50%);
+            white-space: nowrap;
+        }
+
+        .site-header__inner {
+            gap: 0.75rem;
+        }
     }
-    .hamburger-open .hamburger-line:nth-child(2) {
-        opacity: 0;
-    }
-    .hamburger-open .hamburger-line:nth-child(3) {
-        transform: translateY(-7px) rotate(-45deg);
+
+    @media (min-width: 1100px) {
+        .site-nav {
+            display: flex;
+        }
+
+        .site-header__tools {
+            margin-left: 0;
+        }
+
+        .menu-btn,
+        .mobile-menu {
+            display: none;
+        }
     }
 </style>
 
 <script is:inline>
-    // Hamburger menu toggle
-    const hamburgerBtn = document.getElementById("hamburger-btn");
-    const mobileMenu = document.getElementById("mobile-menu");
-    const mobileNav = mobileMenu.querySelector(".mobile-nav");
-    const backdrop = document.getElementById("mobile-menu-backdrop");
+    (() => {
+        const btn = document.getElementById("hamburger-btn");
+        const menu = document.getElementById("mobile-menu");
+        if (!btn || !menu) return;
 
-    const focusableInMenu = () => mobileNav.querySelectorAll("a, button");
+        const setOpen = (open) => {
+            menu.hidden = !open;
+            btn.setAttribute("aria-expanded", String(open));
+            btn.setAttribute("aria-label", open ? btn.dataset.closeLabel : btn.dataset.openLabel);
+            if (open) menu.querySelector("a")?.focus();
+        };
 
-    function openMenu() {
-        mobileMenu.classList.remove("hidden");
-        requestAnimationFrame(() => {
-            mobileNav.classList.remove("translate-x-full");
-            mobileNav.classList.add("translate-x-0");
-            const firstLink = focusableInMenu()[0];
-            if (firstLink) firstLink.focus();
-        });
-        hamburgerBtn.classList.add("hamburger-open");
-        hamburgerBtn.setAttribute("aria-expanded", "true");
-    }
+        btn.addEventListener("click", () => setOpen(btn.getAttribute("aria-expanded") !== "true"));
 
-    function closeMenu() {
-        mobileNav.classList.remove("translate-x-0");
-        mobileNav.classList.add("translate-x-full");
-        hamburgerBtn.classList.remove("hamburger-open");
-        hamburgerBtn.setAttribute("aria-expanded", "false");
-        hamburgerBtn.focus();
-        mobileNav.addEventListener(
-            "transitionend",
-            () => {
-                mobileMenu.classList.add("hidden");
-            },
-            { once: true }
-        );
-    }
-
-    hamburgerBtn.addEventListener("click", () => {
-        const isOpen = hamburgerBtn.getAttribute("aria-expanded") === "true";
-        isOpen ? closeMenu() : openMenu();
-    });
-
-    backdrop.addEventListener("click", closeMenu);
-
-    mobileMenu.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-            closeMenu();
-            return;
-        }
-        if (e.key === "Tab") {
-            const items = focusableInMenu();
-            if (items.length === 0) return;
-            const first = items[0];
-            const last = items[items.length - 1];
-            if (e.shiftKey && document.activeElement === first) {
-                e.preventDefault();
-                last.focus();
-            } else if (!e.shiftKey && document.activeElement === last) {
-                e.preventDefault();
-                first.focus();
-            }
-        }
-    });
-
-    mobileMenu.querySelectorAll(".mobile-link").forEach((link) => {
-        link.addEventListener("click", closeMenu);
-    });
-
-    const langLinks = document.querySelectorAll(".lang-link");
-
-    langLinks.forEach((link) => {
-        link.addEventListener("click", () => {
-            const currentHash = window.location.hash;
-            if (currentHash) {
-                link.href = link.getAttribute("href") + currentHash;
+        menu.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                setOpen(false);
+                btn.focus();
             }
         });
-    });
+
+        menu.querySelectorAll(".mobile-link").forEach((link) => link.addEventListener("click", () => setOpen(false)));
+
+        document.querySelectorAll(".lang-link").forEach((link) => {
+            link.addEventListener("click", () => {
+                const hash = window.location.hash;
+                if (hash) link.href = link.getAttribute("href") + hash;
+            });
+        });
+    })();
 </script>

@@ -1,5 +1,5 @@
 ---
-import type { FooterTexts, A11yTexts } from "@/i18n/ui";
+import type { FooterTexts, SoonTexts, A11yTexts } from "@/i18n/ui";
 import { Image } from "astro:assets";
 
 import IconoFacebook from "@/Icons/IconoFacebook.astro";
@@ -10,54 +10,208 @@ import LogoFacilitator from "@/assets/logos/logo-facilitadora.svg";
 
 interface Props {
     texts: FooterTexts;
+    postEvent: SoonTexts;
     a11yTexts: A11yTexts;
 }
 
-const { texts, a11yTexts } = Astro.props as Props;
+const { texts, postEvent, a11yTexts } = Astro.props as Props;
 ---
 
-<footer class="bg-(--bg-primary) px-6 py-12 text-center text-sm border-t border-gray-300 text-(--color-secondary) relative">
-    <div class="flex justify-center mb-4 md:justify-start gap-4 md:relative md:top-10">
-        {
-            texts.social.facebook && (
-                <a
-                    href={texts.social.facebook}
-                    class="text-(--color-secondary) hover:text-(--color-secondary)/80 transition-colors hover:scale-110"
-                    aria-label={`Facebook - ${texts.foundation.title.replace("\n", " ")}`}
-                >
-                    <IconoFacebook />
-                </a>
-            )
-        }
-        {
-            texts.social.instagram && (
-                <a
-                    href={texts.social.instagram}
-                    class="text-(--color-secondary) hover:text-(--color-secondary)/80 transition-colors hover:scale-110"
-                    aria-label={`Instagram - ${texts.foundation.title.replace("\n", " ")}`}
-                >
-                    <IconoInstagram />
-                </a>
-            )
-        }
-    </div>
-    <div class="max-w-3xl mx-auto flex flex-col justify-between items-center mt-10">
-        <div class="text-left">
-            <div set:html={texts.foundation.description} />
+<footer class="site-footer" data-trail-stop>
+    <div class="greca" aria-hidden="true"></div>
+
+    <div class="wrap">
+        <section class="after" aria-labelledby="after-title">
+            <h2 id="after-title" class="after__title">{postEvent.title}</h2>
+            <p class="after__text">{postEvent.description}</p>
+            <ul class="after__list" role="list">
+                {postEvent.eventList.map((item) => <li>{item}</li>)}
+            </ul>
+        </section>
+
+        <div class="site-footer__grid">
+            <div class="site-footer__logos">
+                <Image src={LogoFoundation} alt={a11yTexts.logoFoundationAlt} class="site-footer__logo" />
+                <Image src={LogoEvent} alt={a11yTexts.logoEventAlt} class="site-footer__logo site-footer__logo--event" />
+            </div>
+
+            <div class="site-footer__privacy">
+                <h2 class="site-footer__heading">{texts.privacyTitle}</h2>
+                <div set:html={texts.foundation.description} />
+            </div>
+
+            <div class="site-footer__side">
+                <h2 class="site-footer__heading">{texts.followTitle}</h2>
+                <div class="site-footer__social">
+                    {
+                        texts.social.facebook && (
+                            <a href={texts.social.facebook} aria-label={`Facebook - ${texts.foundation.title}`}>
+                                <IconoFacebook size="22" />
+                            </a>
+                        )
+                    }
+                    {
+                        texts.social.instagram && (
+                            <a href={texts.social.instagram} aria-label={`Instagram - ${texts.foundation.title}`}>
+                                <IconoInstagram size="22" />
+                            </a>
+                        )
+                    }
+                </div>
+                <h2 class="site-footer__heading site-footer__heading--spaced">{texts.facilitatorLabel}</h2>
+                <Image src={LogoFacilitator} alt={a11yTexts.logoFacilitatorAlt} class="site-footer__facilitator" />
+            </div>
         </div>
-        <div class="logos flex items-center justify-center gap-4 mt-6">
-            <Image src={LogoFoundation} alt={a11yTexts.logoFoundationAlt} class="w-[50%] md:w-60" />
-            <Image src={LogoEvent} alt={a11yTexts.logoEventAlt} class="w-[45%] md:w-48" />
-        </div>
+
+        <p class="site-footer__copy">{texts.copyright}</p>
     </div>
-    <div class="mt-8 text-center">
-        <p>{texts.copyright}</p>
-    </div>
-    <Image src={LogoFacilitator} alt={a11yTexts.logoFacilitatorAlt} class="w-14 mx-auto mt-6 md:mt-0 md:absolute md:bottom-5 md:right-5" />
 </footer>
 
 <style>
-    a {
-        color: var(--color-secondary);
+    .site-footer {
+        position: relative;
+        background-color: var(--anil-deep);
+        color: var(--cal);
+        padding-bottom: 2.5rem;
+    }
+
+    /* Greca escalonada inspirada en los frisos de Mitla */
+    .greca {
+        height: 36px;
+        margin-top: -1px;
+        background-color: var(--cal);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='36' viewBox='0 0 96 36'%3E%3Cpath d='M0 36V27H12V18H24V9H36V0H60V9H72V18H84V27H96V36Z' fill='%23171a5c'/%3E%3Cpath d='M42 36V20H54V36Z' fill='%23f6a609'/%3E%3C/svg%3E");
+        background-repeat: repeat-x;
+        background-size: 96px 36px;
+        background-position: bottom center;
+    }
+
+    .after {
+        display: grid;
+        gap: 0.75rem 3rem;
+        padding-block: clamp(3rem, 6vw, 4.5rem);
+        border-bottom: 1px solid color-mix(in srgb, var(--jacaranda) 30%, transparent);
+    }
+
+    .after__title {
+        font-size: clamp(1.9rem, 3.6vw, 2.75rem);
+        color: var(--cempasuchil);
+    }
+
+    .after__text {
+        color: var(--jacaranda);
+        font-size: 1.1rem;
+    }
+
+    .after__list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 0.5rem 0 0;
+        padding: 0;
+        list-style: none;
+
+        li {
+            padding: 0.4rem 0.95rem 0.3rem;
+            border: 1.5px solid var(--jacaranda);
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+    }
+
+    .site-footer__grid {
+        display: grid;
+        gap: 2.5rem;
+        padding-block: 3rem;
+    }
+
+    .site-footer__logos {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1rem 1.5rem;
+    }
+
+    .site-footer__logo {
+        width: 12rem;
+        height: auto;
+    }
+
+    .site-footer__logo--event {
+        width: 9.5rem;
+    }
+
+    .site-footer__heading {
+        font-size: 1rem;
+        font-weight: 750;
+        letter-spacing: 0;
+        color: var(--cempasuchil);
+        margin-bottom: 0.75rem;
+    }
+
+    .site-footer__heading--spaced {
+        margin-top: 1.75rem;
+    }
+
+    .site-footer__privacy {
+        max-width: 52ch;
+        font-size: 0.95rem;
+        color: var(--jacaranda);
+
+        :global(p + p) {
+            margin-top: 0.75rem;
+        }
+    }
+
+    .site-footer__social {
+        display: flex;
+        gap: 0.5rem;
+
+        a {
+            display: grid;
+            place-items: center;
+            width: 2.75rem;
+            height: 2.75rem;
+            border-radius: 50%;
+            border: 1.5px solid var(--jacaranda);
+            transition: background-color 0.2s ease;
+
+            &:hover {
+                background-color: var(--anil);
+            }
+        }
+    }
+
+    .site-footer__facilitator {
+        width: 3.5rem;
+        height: auto;
+    }
+
+    .site-footer__copy {
+        padding-top: 1.5rem;
+        border-top: 1px solid color-mix(in srgb, var(--jacaranda) 30%, transparent);
+        font-size: 0.9rem;
+        color: var(--jacaranda);
+    }
+
+    @media (min-width: 900px) {
+        .after {
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+            align-items: start;
+        }
+
+        .after__title {
+            grid-row: span 2;
+        }
+
+        .site-footer__grid {
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr) minmax(0, 0.6fr);
+        }
+
+        .site-footer__logos {
+            flex-direction: column;
+            align-items: flex-start;
+        }
     }
 </style>

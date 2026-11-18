@@ -1,63 +1,93 @@
 @import "tailwindcss";
 
+/*
+ * Paleta "añil y cempasúchil"
+ * Ultramar profundo (tinte de añil), cempasúchil, jacaranda y cal.
+ */
 :root {
-    --color-primary: #2c2d2f;
-    --color-secondary: #fff;
-    --bg-primary: #405950;
-    --bg-secondary: #95b5b9;
-    --bg-tertiary: #b1cccf;
-    --bg-quaternary: #bcd7da;
-    --bg-red: #ca161a;
-    --bg-red2: #db3f2a;
-    --bg-salmon: #d86c62;
-    --font-display: "Cormorant Garamond", Georgia, serif;
-    --font-body: "Jost", system-ui, -apple-system, sans-serif;
+    --anil: #2b2f9e;
+    --anil-deep: #171a5c;
+    --anil-ink: #191b4d;
+    --cempasuchil: #f6a609;
+    --cempasuchil-soft: #ffd27a;
+    --cempasuchil-ink: #8a5300;
+    --jacaranda: #c9c4f2;
+    --jacaranda-soft: #e6e3fb;
+    --cal: #f7f7fc;
+    --line: #d7d4ef;
+
+    --font-sans: "Overpass Variable", "Overpass", system-ui, -apple-system, sans-serif;
+
+    --gutter: 2.75rem;
+    --wrap: min(1180px, 100% - var(--gutter) * 2);
+    --section-space: clamp(4.5rem, 9vw, 8.5rem);
 }
 
+@media (min-width: 1024px) {
+    :root {
+        --gutter: 6.5rem;
+    }
+}
 
 html {
     scroll-behavior: smooth;
-    /*scroll-padding-top: 4rem;*/
-    font-family: var(--font-body);
-    font-weight: 300;
-    font-variant-numeric: lining-nums;
+    scroll-padding-top: 5rem;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    color: var(--anil-ink);
+    background-color: var(--cal);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+body {
+    background-color: var(--cal);
+    overflow-x: clip;
 }
 
 h1,
 h2,
-h4,
-h5,
-h6 {
-    font-family: var(--font-display);
-    font-weight: 700;
-}
-
-h2 {
-    font-size: clamp(1.1rem, 2.5vw, 1.75rem);
-}
-h3 {
-    text-transform: uppercase;
-    font-size: clamp(1.2rem, 2vw, 2.25rem);
-}
-
-a {
-    text-decoration: underline;
-
-    &:hover {
-        opacity: 0.6;
-    }
+h3,
+h4 {
+    font-family: var(--font-sans);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.02;
+    text-wrap: balance;
 }
 
 p {
-    margin-block-end: 1em;
-    font-family: var(--font-body);
-    font-weight: 400;
-    font-size: clamp(0.4rem, 3.5vw, 1.1rem);
+    line-height: 1.6;
+    text-wrap: pretty;
 }
 
-li {
-    margin-bottom: 0.6rem;
-    list-style: inside;
+a {
+    color: inherit;
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+}
+
+::selection {
+    background-color: var(--cempasuchil);
+    color: var(--anil-ink);
+}
+
+.wrap {
+    width: var(--wrap);
+    margin-inline: auto;
+}
+
+.section-title {
+    font-size: clamp(2.4rem, 6vw, 4.75rem);
+    font-weight: 850;
+    letter-spacing: -0.035em;
+    line-height: 0.95;
 }
 
 .skip-to-content {
@@ -66,11 +96,10 @@ li {
     top: 0;
     z-index: 100;
     padding: 0.75rem 1.5rem;
-    background-color: var(--color-primary);
-    color: var(--color-secondary);
-    font-weight: 600;
+    background-color: var(--anil-ink);
+    color: var(--cal);
+    font-weight: 700;
     text-decoration: none;
-    border-radius: 0 0 0.5rem 0;
 
     &:focus {
         left: 0;
@@ -78,21 +107,41 @@ li {
 }
 
 :focus-visible {
-    outline: 3px solid var(--bg-primary);
-    outline-offset: 2px;
+    outline: 3px solid var(--cempasuchil);
+    outline-offset: 3px;
+    border-radius: 2px;
 }
 
-details {
-    font-size: clamp(0.7rem, 1.7vw, 1.1rem);
-    border: none;
-    border-bottom: solid 1px;
-    background-color: transparent;
-    border-radius: 0;
+/* Botones con forma de señal de vereda */
+.sign {
+    --sign-bg: var(--anil);
+    --sign-fg: var(--cal);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 3rem;
+    padding: 0.55rem 2.4rem 0.45rem 1.15rem;
+    background-color: var(--sign-bg);
+    color: var(--sign-fg);
+    font-weight: 750;
+    font-size: 1.05rem;
+    text-decoration: none;
+    clip-path: polygon(0 0, calc(100% - 1.1rem) 0, 100% 50%, calc(100% - 1.1rem) 100%, 0 100%);
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
 
-    > div {
-        margin-block-end: 1em;
-        font-family: var(--font-body);
-        font-weight: 400;
-        font-size: clamp(0.4rem, 3.5vw, 1.1rem);
+    &:hover {
+        transform: translateX(3px);
     }
+
+    &:focus-visible {
+        clip-path: none;
+        border-radius: 0;
+    }
+}
+
+.sign--ghost {
+    --sign-bg: var(--jacaranda);
+    --sign-fg: var(--anil-ink);
 }

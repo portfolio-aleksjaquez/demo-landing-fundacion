@@ -1,9 +1,8 @@
 ---
 import type { HeroTexts, A11yTexts } from "@/i18n/ui";
 import { Image } from "astro:assets";
-import heroImage from "@/assets/img/hero-image.svg";
 import LogoFoundation from "@/assets/logos/logo-fundacion.svg";
-import LogoEvent from "@/assets/logos/logo-encuentro.svg";
+import HeroIllustration from "@/components/HeroIllustration.astro";
 
 interface Props {
     texts: HeroTexts;
@@ -13,29 +12,192 @@ interface Props {
 const { texts, a11yTexts } = Astro.props as Props;
 ---
 
-<section class="min-h-100 py-0 lg:py-0 mx-auto text-center relative">
-    <div class="lg:absolute top-0 left-0 right-0 flex flex-col items-center justify-center px-6 text-center">
-        <div class="max-w-2xl">
-            <h1 class="relative whitespace-pre-line font-semibold text-xl sm:text-3xl leading-snug mt-8 text-(--color-primary)/90 hero-subtitle">
-                {texts.subtitle}
-            </h1>
-            <div class="logos flex items-center justify-center gap-4 mt-8">
-                <Image src={LogoFoundation} alt={a11yTexts.logoFoundationAlt} class="w-[50%] sm:w-72" />
-                <Image src={LogoEvent} alt={a11yTexts.logoEventAlt} class="w-[42%] sm:w-56" />
-            </div>
+<section id="inicio" class="hero" data-trail-stop>
+    <div class="hero__text">
+        <Image src={LogoFoundation} alt={a11yTexts.logoFoundationAlt} class="hero__logo" loading="eager" />
+        <h1 class="hero__title">{texts.title}</h1>
+
+        <div class="fingerpost">
+            <span class="fingerpost__post" aria-hidden="true"></span>
+            <p class="fingerpost__plate fingerpost__plate--right">{texts.dates}</p>
+            <p class="fingerpost__plate fingerpost__plate--left">{texts.place}</p>
+        </div>
+
+        <p class="hero__lead">{texts.lead}</p>
+
+        <div class="hero__actions">
+            <a href="#agenda" class="sign">{texts.ctaPrimary}</a>
+            <a href="#faq" class="hero__link">{texts.ctaSecondary}</a>
         </div>
     </div>
-    <Image src={heroImage} alt={a11yTexts.heroImageAlt} class="mx-auto w-full h-auto block object-contain" />
+
+    <div class="hero__art">
+        <HeroIllustration alt={a11yTexts.heroImageAlt} />
+    </div>
 </section>
 
 <style>
-    .hero-subtitle::after {
-        content: "";
+    .hero {
+        display: grid;
+        grid-template-columns: var(--gutter) minmax(0, 1fr);
+        grid-template-areas:
+            ". text"
+            "art art";
+    }
+
+    .hero__text {
+        grid-area: text;
+        padding-block: clamp(2.5rem, 6vw, 4.5rem) 3rem;
+        padding-right: var(--gutter);
+    }
+
+    .hero__logo {
+        width: clamp(9.5rem, 16vw, 12.5rem);
+        height: auto;
+        margin-left: -0.35rem;
+    }
+
+    .hero__title {
+        margin-top: 1.5rem;
+        font-size: clamp(3.4rem, 8.4vw, 8.25rem);
+        font-weight: 850;
+        line-height: 0.88;
+        letter-spacing: -0.05em;
+        max-width: 9ch;
+        text-wrap: balance;
+    }
+
+    .fingerpost {
+        position: relative;
+        display: grid;
+        justify-items: start;
+        gap: 0.5rem;
+        margin-top: 2.25rem;
+        padding-left: 1.75rem;
+    }
+
+    .fingerpost__post {
         position: absolute;
+        left: 0.55rem;
+        top: -0.6rem;
+        bottom: -1.1rem;
+        width: 6px;
+        border-radius: 3px;
+        background-color: var(--anil-ink);
+    }
+
+    .fingerpost__plate {
+        margin: 0;
+        padding: 0.6rem 2.2rem 0.45rem 1.1rem;
+        font-size: clamp(1.15rem, 2vw, 1.45rem);
+        font-weight: 800;
+        letter-spacing: -0.01em;
+        line-height: 1.1;
+        transform-origin: left center;
+    }
+
+    .fingerpost__plate--right {
+        background-color: var(--cempasuchil);
+        color: var(--anil-ink);
+        clip-path: polygon(0 0, calc(100% - 1.2rem) 0, 100% 50%, calc(100% - 1.2rem) 100%, 0 100%);
+    }
+
+    .fingerpost__plate--left {
+        margin-left: -1.35rem;
+        padding: 0.6rem 1.1rem 0.45rem 2.2rem;
+        background-color: var(--anil);
+        color: var(--cal);
+        clip-path: polygon(1.2rem 0, 100% 0, 100% 100%, 1.2rem 100%, 0 50%);
+    }
+
+    .hero__lead {
+        margin-top: 2.5rem;
+        max-width: 44ch;
+        font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+        line-height: 1.55;
+    }
+
+    .hero__actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1rem 1.75rem;
+        margin-top: 2rem;
+    }
+
+    .hero__link {
+        font-weight: 700;
+        text-decoration: underline;
+        text-decoration-color: var(--cempasuchil);
+        text-decoration-thickness: 3px;
+        text-underline-offset: 0.35em;
+    }
+
+    .hero__art {
+        grid-area: art;
+        position: relative;
+        aspect-ratio: 600 / 560;
+        overflow: hidden;
+        background-color: var(--anil);
+    }
+
+    .hero__art :global(.hero-art__svg) {
+        position: absolute;
+        inset: 0;
         width: 100%;
-        height: 6px;
-        background: linear-gradient(90deg, transparent, var(--bg-primary), transparent);
-        bottom: -15px;
-        left: 0;
+        height: 100%;
+    }
+
+    @media (min-width: 1024px) {
+        .hero {
+            grid-template-columns: var(--gutter) minmax(0, 1.25fr) minmax(0, 1fr);
+            grid-template-areas: ". text art";
+            min-height: min(calc(100svh - 4.25rem), 860px);
+        }
+
+        .hero__text {
+            align-self: center;
+            padding-right: 3rem;
+        }
+
+        .hero__art {
+            aspect-ratio: auto;
+            min-height: 100%;
+        }
+    }
+
+    @media (min-width: 1440px) {
+        .hero {
+            grid-template-columns: calc((100% - 1180px) / 2) minmax(0, 1.25fr) minmax(0, 1fr);
+        }
     }
 </style>
+
+<script>
+    import gsap from "gsap";
+
+    let heroCtx: gsap.Context | null = null;
+
+    const initHero = () => {
+        heroCtx?.revert();
+        const hero = document.querySelector<HTMLElement>(".hero");
+        if (!hero) return;
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        heroCtx = gsap.context(() => {
+            if (reduce) return;
+            const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+            tl.from(".hero__title", { y: 28, opacity: 0, duration: 0.8 })
+                .from(".fingerpost__plate", { rotate: -9, opacity: 0, duration: 0.6, stagger: 0.12 }, "-=0.45")
+                .from(".hero-art__sun", { y: 70, duration: 1.4, ease: "power2.out", transformOrigin: "center" }, 0)
+                .fromTo(".hero-art__mask", { attr: { "stroke-dashoffset": 1, "stroke-dasharray": "1 1" } }, { attr: { "stroke-dashoffset": 0 }, duration: 1.8, ease: "power1.inOut" }, 0.3)
+                .from(".hero-art__sign", { scaleY: 0, transformOrigin: "50% 100%", duration: 0.5, ease: "back.out(2)" }, 1.6);
+        }, hero);
+    };
+
+    document.addEventListener("astro:page-load", initHero);
+    document.addEventListener("astro:before-preparation", () => {
+        heroCtx?.revert();
+        heroCtx = null;
+    });
+</script>

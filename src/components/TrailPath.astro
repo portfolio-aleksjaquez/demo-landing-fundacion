@@ -1,0 +1,223 @@
+---
+// Vereda que se dibuja con el scroll: un camino punteado recorre el margen
+// izquierdo de la página y se va trazando en cempasúchil hasta la altura de
+// lectura. Cada sección marcada con data-trail-stop es una parada del camino.
+---
+
+<div id="trail" class="trail" aria-hidden="true">
+    <svg class="trail__svg" xmlns="http://www.w3.org/2000/svg">
+        <path class="trail__base" fill="none"></path>
+        <path class="trail__shadow" fill="none"></path>
+        <path class="trail__line" fill="none"></path>
+        <g class="trail__stops"></g>
+    </svg>
+</div>
+
+<style>
+    .trail {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: var(--gutter);
+        height: 100%;
+        pointer-events: none;
+        z-index: 40;
+    }
+
+    .trail__svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+    }
+
+    .trail__base {
+        stroke: var(--jacaranda);
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-dasharray: 0.1 11;
+    }
+
+    .trail__shadow {
+        stroke: var(--anil-ink);
+        stroke-width: 7;
+        stroke-linecap: round;
+    }
+
+    .trail__line {
+        stroke: var(--cempasuchil);
+        stroke-width: 3.5;
+        stroke-linecap: round;
+    }
+
+    .trail__stops :global(circle) {
+        fill: var(--cal);
+        stroke: var(--anil-ink);
+        stroke-width: 3;
+        transition:
+            fill 0.3s ease,
+            r 0.3s ease;
+    }
+
+    .trail__stops :global(circle.is-reached) {
+        fill: var(--cempasuchil);
+    }
+
+    @media print {
+        .trail {
+            display: none;
+        }
+    }
+</style>
+
+<script>
+    import gsap from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const SVG_NS = "http://www.w3.org/2000/svg";
+    const READING_LINE = 0.62; // fracción del viewport donde va la punta del trazo
+
+    let trigger: ScrollTrigger | null = null;
+    let observer: ResizeObserver | null = null;
+    let rebuildTimer: ReturnType<typeof setTimeout> | null = null;
+    let onRefresh: (() => void) | null = null;
+
+    function initTrail() {
+        const root = document.getElementById("trail");
+        if (!root) return;
+        const svg = root.querySelector("svg") as SVGSVGElement;
+        const base = root.querySelector(".trail__base") as SVGPathElement;
+        const shadow = root.querySelector(".trail__shadow") as SVGPathElement;
+        const line = root.querySelector(".trail__line") as SVGPathElement;
+        const stopsGroup = root.querySelector(".trail__stops") as SVGGElement;
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        let length = 0;
+        let lookup: { y: number; len: number }[] = [];
+        let stops: { y: number; el: SVGCircleElement }[] = [];
+        const drawn = { len: 0 };
+
+        const lengthAtY = (y: number) => {
+            if (!lookup.length) return 0;
+            if (y <= lookup[0].y) return 0;
+            for (let i = 1; i < lookup.length; i++) {
+                if (lookup[i].y >= y) {
+                    const a = lookup[i - 1];
+                    const b = lookup[i];
+                    const t = (y - a.y) / Math.max(b.y - a.y, 0.0001);
+                    return a.len + (b.len - a.len) * t;
+                }
+            }
+            return length;
+        };
+
+        const paint = () => {
+            const offset = Math.max(length - drawn.len, 0);
+            line.style.strokeDashoffset = `${offset}`;
+            shadow.style.strokeDashoffset = `${offset}`;
+            const tipY = lookup.length ? lookup[Math.min(lookup.length - 1, Math.round((drawn.len / Math.max(length, 1)) * (lookup.length - 1)))].y : 0;
+            stops.forEach((stop) => stop.el.classList.toggle("is-reached", stop.y <= tipY + 2));
+        };
+
+        const targetLength = () => lengthAtY(window.scrollY + window.innerHeight * READING_LINE);
+
+        const build = () => {
+            root.style.height = "0px";
+            const docHeight = document.documentElement.scrollHeight;
+            root.style.height = `${docHeight}px`;
+            const width = root.clientWidth;
+            const left = width * 0.32;
+            const right = width * 0.68;
+
+            const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-trail-stop]"));
+            const ys = sections.map((s) => s.getBoundingClientRect().top + window.scrollY + 34);
+            if (ys.length < 2) return;
+            const startY = ys[0] + 40;
+            const points = [startY, ...ys.slice(1)];
+
+            let d = `M ${left} ${startY - 40} L ${left} ${startY}`;
+            points.forEach((y, i) => {
+                if (i === 0) return;
+                const prevY = points[i - 1];
+                const prevX = i % 2 === 1 ? left : right;
+                const x = i % 2 === 1 ? right : left;
+                const mid = (y - prevY) / 2;
+                d += ` C ${prevX} ${prevY + mid} ${x} ${y - mid} ${x} ${y}`;
+            });
+
+            [base, shadow, line].forEach((p) => p.setAttribute("d", d));
+            length = line.getTotalLength();
+            line.style.strokeDasharray = `${length} ${length}`;
+            shadow.style.strokeDasharray = `${length} ${length}`;
+
+            lookup = [];
+            const steps = Math.max(80, Math.round(length / 12));
+            for (let i = 0; i <= steps; i++) {
+                const len = (i / steps) * length;
+                lookup.push({ y: line.getPointAtLength(len).y, len });
+            }
+
+            stopsGroup.replaceChildren();
+            stops = points.map((y, i) => {
+                const c = document.createElementNS(SVG_NS, "circle");
+                c.setAttribute("cx", String(i === 0 ? left : i % 2 === 1 ? right : left));
+                c.setAttribute("cy", String(y));
+                c.setAttribute("r", "7");
+                stopsGroup.appendChild(c);
+                return { y, el: c };
+            });
+
+            drawn.len = targetLength();
+            paint();
+        };
+
+        const update = () => {
+            const target = targetLength();
+            if (reduceMotion) {
+                drawn.len = target;
+                paint();
+            } else {
+                gsap.to(drawn, { len: target, duration: 0.6, ease: "power2.out", overwrite: true, onUpdate: paint });
+            }
+        };
+
+        const scheduleRebuild = () => {
+            if (rebuildTimer) clearTimeout(rebuildTimer);
+            rebuildTimer = setTimeout(() => {
+                build();
+                ScrollTrigger.refresh();
+            }, 150);
+        };
+
+        build();
+        svg.setAttribute("data-ready", "");
+
+        trigger = ScrollTrigger.create({
+            start: 0,
+            end: "max",
+            onUpdate: update,
+            onRefresh: update,
+        });
+
+        observer = new ResizeObserver(scheduleRebuild);
+        observer.observe(document.body);
+        onRefresh = scheduleRebuild;
+        window.addEventListener("trail:refresh", onRefresh);
+    }
+
+    function destroyTrail() {
+        trigger?.kill();
+        trigger = null;
+        observer?.disconnect();
+        observer = null;
+        if (rebuildTimer) clearTimeout(rebuildTimer);
+        if (onRefresh) window.removeEventListener("trail:refresh", onRefresh);
+        onRefresh = null;
+    }
+
+    document.addEventListener("astro:page-load", initTrail);
+    document.addEventListener("astro:before-preparation", destroyTrail);
+</script>

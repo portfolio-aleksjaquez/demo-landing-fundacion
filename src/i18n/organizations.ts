@@ -1,6 +1,7 @@
 // Organizaciones ficticias del Encuentro Vereda 2027 (contenido de demostración).
 type Lang = 'es' | 'en' | 'pt';
 type Localized = Record<Lang, string>;
+export type Region = 'mx' | 'ca' | 'sa' | 'rg';
 
 interface Social {
     twitter?: string;
@@ -17,21 +18,15 @@ interface OrganizationSource {
     country: Localized;
     description: Localized;
     social?: Social;
-    bgImage: string;
-    image: string;
+    region: Region;
 }
 
-const deco = {
-    plant: 'src/assets/img/O-Deco1.svg',
-    sun: 'src/assets/img/O-Deco2.svg',
-    waves: 'src/assets/img/O-Deco3.svg',
-    bird: 'src/assets/img/O-Deco4.svg',
-};
 
 const organizations: OrganizationSource[] = [
     {
         logo: 'src/assets/logos/org-tejedoras.svg',
         name: 'Red Tejedoras del Sur',
+        region: 'sa',
         url: '#',
         country: { es: 'Argentina, Uruguay', en: 'Argentina, Uruguay', pt: 'Argentina, Uruguai' },
         description: {
@@ -40,12 +35,11 @@ const organizations: OrganizationSource[] = [
             pt: 'Rede de coletivos têxteis que transforma os saberes da tecelagem em oportunidades econômicas e espaços de cuidado para mulheres em áreas rurais e periurbanas.',
         },
         social: { instagram: '#', facebook: '#' },
-        bgImage: '1',
-        image: deco.waves,
     },
     {
         logo: 'src/assets/logos/org-agua-viva.svg',
         name: 'Colectiva Agua Viva',
+        region: 'sa',
         url: '#',
         country: { es: 'Bolivia', en: 'Bolivia', pt: 'Bolívia' },
         description: {
@@ -54,12 +48,11 @@ const organizations: OrganizationSource[] = [
             pt: 'Acompanhamos comunidades andinas na defesa da água e na criação de comitês comunitários liderados por mulheres para sua gestão.',
         },
         social: { facebook: '#' },
-        bgImage: '5',
-        image: deco.waves,
     },
     {
         logo: 'src/assets/logos/org-raiz-comun.svg',
         name: 'Instituto Raíz Común',
+        region: 'sa',
         url: '#',
         country: { es: 'Brasil', en: 'Brazil', pt: 'Brasil' },
         description: {
@@ -68,12 +61,11 @@ const organizations: OrganizationSource[] = [
             pt: 'Centro de formação em agroecologia e economia solidária que impulsiona projetos produtivos liderados por mulheres e juventudes.',
         },
         social: { instagram: '#', linkedin: '#' },
-        bgImage: '4',
-        image: deco.plant,
     },
     {
         logo: 'src/assets/logos/org-brisa-andina.svg',
         name: 'Fondo Brisa Andina',
+        region: 'sa',
         url: '#',
         country: { es: 'Chile, Perú', en: 'Chile, Peru', pt: 'Chile, Peru' },
         description: {
@@ -82,12 +74,11 @@ const organizations: OrganizationSource[] = [
             pt: 'Fundo comunitário que mobiliza recursos flexíveis para organizações de base que trabalham pelos direitos de meninas e adolescentes.',
         },
         social: { instagram: '#' },
-        bgImage: '7',
-        image: deco.sun,
     },
     {
         logo: 'src/assets/logos/org-manglar.svg',
         name: 'Mujeres del Manglar',
+        region: 'sa',
         url: '#',
         country: { es: 'Colombia', en: 'Colombia', pt: 'Colômbia' },
         description: {
@@ -96,12 +87,11 @@ const organizations: OrganizationSource[] = [
             pt: 'Associação de pescadoras e coletoras do Pacífico que protege os manguezais e fortalece a autonomia econômica de suas integrantes.',
         },
         social: { facebook: '#', instagram: '#' },
-        bgImage: '5',
-        image: deco.waves,
     },
     {
         logo: 'src/assets/logos/org-casa-lumbre.svg',
         name: 'Casa Lumbre',
+        region: 'mx',
         url: '#',
         country: { es: 'México', en: 'Mexico', pt: 'México' },
         description: {
@@ -110,12 +100,11 @@ const organizations: OrganizationSource[] = [
             pt: 'Espaço de acolhimento e acompanhamento psicossocial para mulheres que saem de contextos de violência, com oficinas de autonomia e redes de apoio.',
         },
         social: { facebook: '#', instagram: '#' },
-        bgImage: '2',
-        image: deco.sun,
     },
     {
         logo: 'src/assets/logos/org-cuidar-datos.svg',
         name: 'Observatorio Cuidar Datos',
+        region: 'mx',
         url: '#',
         country: { es: 'México', en: 'Mexico', pt: 'México' },
         description: {
@@ -124,12 +113,11 @@ const organizations: OrganizationSource[] = [
             pt: 'Equipe de análise de dados abertos que produz pesquisas e ferramentas digitais para dar visibilidade às desigualdades de gênero.',
         },
         social: { linkedin: '#' },
-        bgImage: '6',
-        image: deco.bird,
     },
     {
         logo: 'src/assets/logos/org-semillero.svg',
         name: 'Semillero Caribe',
+        region: 'ca',
         url: '#',
         country: { es: 'República Dominicana, Haití', en: 'Dominican Republic, Haiti', pt: 'República Dominicana, Haiti' },
         description: {
@@ -138,12 +126,11 @@ const organizations: OrganizationSource[] = [
             pt: 'Programa binacional de bancos de sementes e hortas escolares que impulsiona a soberania alimentar a partir das comunidades.',
         },
         social: { instagram: '#' },
-        bgImage: '3',
-        image: deco.plant,
     },
     {
         logo: 'src/assets/logos/org-horizonte.svg',
         name: 'Alianza Horizonte Verde',
+        region: 'rg',
         url: '#',
         country: { es: 'Regional', en: 'Regional', pt: 'Regional' },
         description: {
@@ -152,12 +139,11 @@ const organizations: OrganizationSource[] = [
             pt: 'Aliança de organizações ambientais e feministas que articula agendas de justiça climática na América Latina e no Caribe.',
         },
         social: { linkedin: '#', youtube: '#' },
-        bgImage: '4',
-        image: deco.plant,
     },
     {
         logo: 'src/assets/logos/org-faro.svg',
         name: 'Laboratorio de Narrativas Faro',
+        region: 'rg',
         url: '#',
         country: { es: 'Regional', en: 'Regional', pt: 'Regional' },
         description: {
@@ -166,12 +152,11 @@ const organizations: OrganizationSource[] = [
             pt: 'Laboratório de comunicação que acompanha movimentos sociais a contar suas histórias com estratégias criativas e seguras.',
         },
         social: { instagram: '#', linkedin: '#' },
-        bgImage: '3',
-        image: deco.bird,
     },
     {
         logo: 'src/assets/logos/org-territorios.svg',
         name: 'Fondo Territorios Libres',
+        region: 'ca',
         url: '#',
         country: { es: 'Centroamérica', en: 'Central America', pt: 'América Central' },
         description: {
@@ -180,12 +165,11 @@ const organizations: OrganizationSource[] = [
             pt: 'Fundo regional que apoia defensoras da terra e do território com financiamento direto, proteção e acompanhamento próximo.',
         },
         social: { facebook: '#' },
-        bgImage: '2',
-        image: deco.sun,
     },
     {
         logo: 'src/assets/logos/org-maizal.svg',
         name: 'Escuela Popular Maizal',
+        region: 'ca',
         url: '#',
         country: { es: 'Guatemala', en: 'Guatemala', pt: 'Guatemala' },
         description: {
@@ -194,12 +178,11 @@ const organizations: OrganizationSource[] = [
             pt: 'Escola de educação popular que forma lideranças comunitárias indígenas a partir da memória, da língua e da roça tradicional.',
         },
         social: { facebook: '#', youtube: '#' },
-        bgImage: '6',
-        image: deco.plant,
     },
     {
         logo: 'src/assets/logos/org-infancias.svg',
         name: 'Red Infancias Seguras',
+        region: 'rg',
         url: '#',
         country: { es: 'Global', en: 'Global', pt: 'Global' },
         description: {
@@ -208,12 +191,11 @@ const organizations: OrganizationSource[] = [
             pt: 'Rede internacional que impulsiona políticas de proteção da infância e fortalece organizações locais que trabalham com crianças.',
         },
         social: { instagram: '#', linkedin: '#' },
-        bgImage: '1',
-        image: deco.sun,
     },
     {
         logo: 'src/assets/logos/org-lucerna.svg',
         name: 'Cine Itinerante Lucerna',
+        region: 'mx',
         url: '#',
         country: { es: 'México', en: 'Mexico', pt: 'México' },
         description: {
@@ -222,8 +204,6 @@ const organizations: OrganizationSource[] = [
             pt: 'Projeto de cinema comunitário que leva exibições e oficinas de documentário a praças, escolas e centros culturais.',
         },
         social: { instagram: '#', youtube: '#' },
-        bgImage: '7',
-        image: deco.bird,
     },
 ];
 
@@ -235,6 +215,5 @@ export const participantsFor = (lang: Lang) =>
         country: org.country[lang],
         description: org.description[lang],
         social: org.social,
-        bgImage: org.bgImage,
-        image: org.image,
+        region: org.region,
     }));

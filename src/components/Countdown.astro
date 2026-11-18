@@ -1,8 +1,5 @@
 ---
 import type { CountdownTexts, A11yTexts } from "@/i18n/ui";
-import { Image } from "astro:assets";
-import lineaImg from "@/assets/img/C-Linea.svg";
-import cloudImg from "@/assets/img/S-Nube.svg";
 
 interface Props {
     texts: CountdownTexts;
@@ -10,84 +7,175 @@ interface Props {
 }
 
 const { texts, a11yTexts } = Astro.props as Props;
+const units = [
+    { id: "days", label: texts.labels.days },
+    { id: "hours", label: texts.labels.hours },
+    { id: "minutes", label: texts.labels.minutes },
+];
 ---
 
-<section id="countdown" class="py-12 text-center scroll-mt-14 relative overflow-x-hidden">
-    <Image src={cloudImg} alt="" class="h-24 w-auto object-contain relative md:absolute md:-right-28 md:top-10 md:h-32 block z-1 m-auto mb-4" aria-hidden="true" />
-    <h2 class="text-xl sm:text-3xl font-bold mb-6 uppercase">{texts.title}</h2>
-    <div
-        id="countdown-container"
-        data-target={texts.targetDate}
-        class="flex justify-center items-center gap-4 text-4xl sm:text-8xl font-light z-10 relative"
-        role="timer"
-        aria-live="polite"
-        aria-atomic="true"
-        aria-label={a11yTexts.countdownLabel}
-    >
-        <div class="flex flex-col items-center">
-            <span id="days" class="countdown-number">00</span>
-            <span class="text-sm uppercase tracking-wide mt-2">{texts.labels.days}</span>
+<section id="sede" class="countdown" data-trail-stop>
+    <div class="wrap countdown__grid">
+        <div class="countdown__clock">
+            <h2 class="countdown__title">{texts.title}</h2>
+            <div id="countdown-container" class="countdown__units" data-target={texts.targetDate} data-finished={texts.finished} role="timer" aria-live="off" aria-label={a11yTexts.countdownLabel}>
+                {
+                    units.map((unit) => (
+                        <div class="countdown__unit">
+                            <span id={unit.id} class="countdown__number">
+                                00
+                            </span>
+                            <span class="countdown__label">{unit.label}</span>
+                        </div>
+                    ))
+                }
+            </div>
+            <p class="countdown__subtitle">{texts.subtitle}</p>
         </div>
-        <Image src={lineaImg} alt="" class="h-12 w-auto object-contain md:h-24" aria-hidden="true" />
-        <div class="flex flex-col items-center">
-            <span id="hours" class="countdown-number">00</span>
-            <span class="text-sm uppercase tracking-wide mt-2">{texts.labels.hours}</span>
-        </div>
-        <Image src={lineaImg} alt="" class="h-12 w-auto object-contain md:h-24" aria-hidden="true" />
-        <div class="flex flex-col items-center">
-            <span id="minutes" class="countdown-number">00</span>
-            <span class="text-sm uppercase tracking-wide mt-2">{texts.labels.minutes}</span>
+
+        <div class="venue">
+            <p class="venue__label">{texts.venueLabel}</p>
+            <p class="venue__name">{texts.address[0]}</p>
+            <p class="venue__place">{texts.address[1]}</p>
+            <a class="sign sign--marigold" href={texts.link}>{texts.linkText}</a>
         </div>
     </div>
-
-    <h3 class="mt-6 text-base sm:text-lg text-(--bg-primary)">{texts.address[0]}, <a class="text-(--bg-primary)!" href={texts.link}>{texts.address[1]}</a></h3>
 </section>
+
+<style>
+    .countdown {
+        background-color: var(--anil);
+        color: var(--cal);
+        padding-block: clamp(3.5rem, 7vw, 6rem);
+    }
+
+    .countdown__grid {
+        display: grid;
+        gap: 3rem;
+    }
+
+    .countdown__title {
+        font-size: clamp(1.5rem, 2.6vw, 2rem);
+        font-weight: 750;
+        letter-spacing: -0.01em;
+    }
+
+    .countdown__units {
+        display: flex;
+        gap: clamp(1rem, 4vw, 3.5rem);
+        margin-top: 0.75rem;
+    }
+
+    .countdown__unit {
+        display: grid;
+    }
+
+    .countdown__number {
+        font-size: clamp(3.4rem, 8.2vw, 8rem);
+        white-space: nowrap;
+        font-weight: 850;
+        line-height: 0.9;
+        letter-spacing: -0.05em;
+        font-variant-numeric: tabular-nums;
+        color: var(--cempasuchil);
+    }
+
+    .countdown__label {
+        margin-top: 0.4rem;
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: var(--jacaranda);
+    }
+
+    .countdown__subtitle {
+        margin-top: 1.5rem;
+        font-size: 1.2rem;
+        color: var(--jacaranda);
+    }
+
+    .venue {
+        align-self: end;
+        padding-top: 1.75rem;
+        border-top: 2px solid color-mix(in srgb, var(--jacaranda) 45%, transparent);
+    }
+
+    .venue__label {
+        font-weight: 700;
+        color: var(--cempasuchil);
+    }
+
+    .venue__name {
+        margin-top: 0.5rem;
+        font-size: clamp(1.6rem, 2.5vw, 2.1rem);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+    }
+
+    .venue__place {
+        margin-top: 0.4rem;
+        margin-bottom: 1.5rem;
+        color: var(--jacaranda);
+    }
+
+    .sign--marigold {
+        --sign-bg: var(--cempasuchil);
+        --sign-fg: var(--anil-ink);
+    }
+
+    @media (min-width: 960px) {
+        .countdown__grid {
+            grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+            align-items: end;
+        }
+
+        .venue {
+            padding-top: 0;
+            padding-left: 2.5rem;
+            border-top: none;
+            border-left: 2px solid color-mix(in srgb, var(--jacaranda) 45%, transparent);
+        }
+    }
+</style>
 
 <script>
     let countdownInterval: ReturnType<typeof setInterval> | undefined;
 
     const initCountdown = () => {
-        if (countdownInterval) {
-            clearInterval(countdownInterval);
-        }
+        if (countdownInterval) clearInterval(countdownInterval);
 
         const container = document.getElementById("countdown-container");
-        if (container) {
-            const targetDateString = container.dataset.target;
-            if (targetDateString) {
-                const targetDate = new Date(targetDateString).getTime();
+        const target = container?.dataset.target;
+        if (!container || !target) return;
 
-                const updateCountdown = () => {
-                    const now = new Date().getTime();
-                    const distance = targetDate - now;
+        const targetDate = new Date(target).getTime();
+        const pad = (n: number) => n.toString().padStart(2, "0");
 
-                    if (distance < 0) return;
-
-                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-
-                    const daysElement = document.getElementById("days");
-                    const hoursElement = document.getElementById("hours");
-                    const minutesElement = document.getElementById("minutes");
-
-                    if (daysElement) daysElement.innerText = days.toString().padStart(2, "0");
-                    if (hoursElement) hoursElement.innerText = hours.toString().padStart(2, "0");
-                    if (minutesElement) minutesElement.innerText = minutes.toString().padStart(2, "0");
-                };
-
-                updateCountdown();
-
-                countdownInterval = setInterval(updateCountdown, 60000);
+        const update = () => {
+            const distance = targetDate - Date.now();
+            if (distance <= 0) {
+                container.textContent = container.dataset.finished ?? "";
+                if (countdownInterval) clearInterval(countdownInterval);
+                return;
             }
-        }
-    };
-    document.addEventListener("astro:page-load", initCountdown);
-</script>
+            const days = Math.floor(distance / 86_400_000);
+            const hours = Math.floor((distance % 86_400_000) / 3_600_000);
+            const minutes = Math.floor((distance % 3_600_000) / 60_000);
+            const set = (id: string, value: string) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = value;
+            };
+            set("days", pad(days));
+            set("hours", pad(hours));
+            set("minutes", pad(minutes));
+        };
 
-<style>
-    .countdown-number {
-        font-family: var(--font-display);
-        font-weight: 700;
-    }
-</style>
+        update();
+        countdownInterval = setInterval(update, 30_000);
+    };
+
+    document.addEventListener("astro:page-load", initCountdown);
+    document.addEventListener("astro:before-preparation", () => {
+        if (countdownInterval) clearInterval(countdownInterval);
+    });
+</script>

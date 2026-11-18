@@ -1,7 +1,5 @@
 ---
-import "@fontsource/jost/300.css";
-import "@fontsource/jost/400.css";
-import "@fontsource/cormorant-garamond/700.css";
+import "@fontsource-variable/overpass";
 import "@/styles/global.css";
 import { Image } from "astro:assets";
 import LogoFoundation from "@/assets/logos/logo-fundacion.svg";
@@ -19,17 +17,17 @@ const base = withBase("");
         <title>404 — Fundación Vereda Clara</title>
         <link rel="icon" type="image/svg+xml" href={withBase("favicon.svg")} />
     </head>
-    <body data-base={base} class="min-h-screen bg-(--bg-tertiary) flex flex-col items-center justify-center px-4 py-16">
+    <body data-base={base} class="min-h-screen bg-(--cal) flex flex-col items-center justify-center px-4 py-16">
         {
             langs.map((lang) => (
                 <div id={`content-${lang}`} class="hidden flex-col items-center text-center gap-6 max-w-sm w-full">
                     <Image src={LogoFoundation} alt={ui[lang].a11y.logoFoundationAlt} class="w-52 mx-auto" />
-                    <div class="text-8xl tracking-widest text-(--bg-primary)" style="font-family: var(--font-display); font-weight: 700;">
+                    <div class="text-9xl text-(--anil)" style="font-weight: 850; letter-spacing: -0.05em; line-height: 0.9;">
                         404
                     </div>
-                    <h1 class="text-sm tracking-widest uppercase text-(--color-primary)">{ui[lang].notFound.title}</h1>
-                    <p class="text-sm text-(--color-primary) opacity-70 leading-relaxed">{ui[lang].notFound.message}</p>
-                    <a href={withBase(`${lang}/`)} class="bg-(--bg-primary) text-white text-xs tracking-wider px-8 py-3 hover:opacity-90 transition-opacity">
+                    <h1 class="text-2xl text-(--anil-ink)">{ui[lang].notFound.title}</h1>
+                    <p class="text-(--anil-ink) leading-relaxed">{ui[lang].notFound.message}</p>
+                    <a href={withBase(`${lang}/`)} class="sign">
                         {ui[lang].notFound.button}
                     </a>
                 </div>
@@ -48,9 +46,4 @@ const base = withBase("");
         </script>
     </body>
 </html>
-<style>
-    a {
-        text-decoration: none;
-        border-radius: 8px;
-    }
-</style>
+

@@ -4,50 +4,36 @@ import { participantsFor } from './organizations';
 export const es = {
     'page.title': 'Inicio',
     nav: {
-        title: 'FUNDACIÓN VEREDA CLARA',
-        about: 'SOBRE',
-        agenda: 'AGENDA',
-        countdown: 'CONTADOR',
-        organizations: 'ORGANIZACIONES PARTICIPANTES',
-        faq: 'FAQ',
+        title: 'Encuentro Vereda 2027',
+        agenda: 'Agenda',
+        countdown: 'Sede',
+        about: 'Sobre el encuentro',
+        organizations: 'Organizaciones',
+        faq: 'Preguntas',
+        languages: 'Idioma',
     },
     hero: {
-        title: 'FUNDACIÓN \n VEREDA CLARA',
-        subtitle: 'Caminos que se cruzan. \n Aprender, crear y cuidar en red',
-    },
-    about: {
-        title: 'SOBRE...',
-        encounter: {
-            title: '<strong>Encuentro Vereda</strong> de Latinoamérica y el Caribe 2027',
-            paragraphs: [
-                'El Encuentro Vereda es una cita bienal que reúne a las organizaciones que caminan con la fundación. En 2027 llega a Oaxaca con un lema sencillo: caminos que se cruzan.',
-                'Serán tres jornadas pensadas como un taller abierto: cada organización trae un proyecto, una pregunta y una herramienta para compartir, y se va con nuevas ideas y aliadas para el año que viene.',
-                'Habrá laboratorios prácticos, recorridos por proyectos comunitarios de la región, espacios de descanso y momentos culturales, porque creemos que el trabajo social también se sostiene con alegría y comunidad.',
-                'La metodología está a cargo del Colectivo Telar, un equipo que diseña encuentros participativos con dinámicas visuales, trabajo en pequeños grupos y acuerdos claros de cuidado.',
-            ],
-        },
-        foundation: {
-            title: 'Fundación Vereda Clara',
-            description: 'Fundada en Oaxaca en 2012, la <strong>Fundación Vereda Clara</strong> impulsa proyectos de educación, salud comunitaria y economía local encabezados por mujeres. Además de otorgar donativos, ofrece mentorías, formación en gestión y espacios de intercambio para que organizaciones de distintos países aprendan unas de otras.',
-        },
-    },
-    countdown: {
-        title: 'EL VIAJE COMIENZA EN...',
-        address: ['Oaxaca de Juárez', 'Posada Vereda Clara'],
-        link: '#',
-        labels: { days: 'días', hours: 'horas', minutes: 'minutos' },
-        targetDate: defaultTargetDate,
+        title: 'Encuentro Vereda 2027',
+        lead: 'Tres días para aprender, crear y cuidar en red con organizaciones de América Latina y el Caribe. Caminos que se cruzan.',
+        dates: '6 al 8 de octubre',
+        place: 'Oaxaca de Juárez',
+        ctaPrimary: 'Ver la agenda',
+        ctaSecondary: 'Preguntas frecuentes',
+        host: 'Convoca la Fundación Vereda Clara',
     },
     agenda: {
-        title: 'AGENDA',
+        title: 'Agenda',
+        intro: 'Cada jornada tiene un enfoque. Elige un día para ver sus actividades.',
         labels: {
-            activity: 'Enfoque',
+            focus: 'Enfoque del día',
+            days: 'Días del encuentro',
         },
         activities: [
             {
-                day: 'MIÉRCOLES 6',
+                weekday: 'Miércoles',
+                date: '6 oct',
                 title: 'Raíces',
-                image: 'src/assets/img/A-Day1.svg',
+                icon: 'roots',
                 objective: 'Presentar los proyectos de cada organización y descubrir puntos en común a través de dinámicas visuales.',
                 events: [
                     { time: '8:30 – 9:15', title: 'Café de llegada y entrega de materiales' },
@@ -60,9 +46,10 @@ export const es = {
                 ],
             },
             {
-                day: 'JUEVES 7',
+                weekday: 'Jueves',
+                date: '7 oct',
                 title: 'Caminos',
-                image: 'src/assets/img/A-Day2.svg',
+                icon: 'paths',
                 objective: 'Aprender haciendo: laboratorios prácticos y visitas a proyectos comunitarios de los Valles Centrales.',
                 events: [
                     { time: '8:00 – 9:00', title: 'Café y repaso del día' },
@@ -75,9 +62,10 @@ export const es = {
                 ],
             },
             {
-                day: 'VIERNES 8',
+                weekday: 'Viernes',
+                date: '8 oct',
                 title: 'Horizontes',
-                image: 'src/assets/img/A-Day3.svg',
+                icon: 'horizon',
                 objective: 'Convertir lo aprendido en acuerdos concretos de colaboración para los próximos dos años.',
                 events: [
                     { time: '8:30 – 9:30', title: 'Café y caminata matutina' },
@@ -90,12 +78,55 @@ export const es = {
             },
         ],
     },
+    countdown: {
+        title: 'Faltan',
+        subtitle: 'para el inicio del encuentro',
+        venueLabel: 'Sede',
+        address: ['Posada Vereda Clara', 'Centro de Oaxaca de Juárez, México'],
+        linkText: 'Ver cómo llegar',
+        link: '#',
+        labels: { days: 'días', hours: 'horas', minutes: 'minutos' },
+        finished: 'El encuentro ya comenzó',
+        targetDate: defaultTargetDate,
+    },
+    about: {
+        title: 'Sobre el encuentro',
+        encounter: {
+            title: 'Encuentro Vereda de América Latina y el Caribe',
+            paragraphs: [
+                'El Encuentro Vereda es una cita bienal que reúne a las organizaciones que caminan con la fundación. En 2027 llega a Oaxaca con un lema sencillo: caminos que se cruzan.',
+                'Serán tres jornadas pensadas como un taller abierto: cada organización trae un proyecto, una pregunta y una herramienta para compartir, y se va con nuevas ideas y aliadas para el año que viene.',
+                'Habrá laboratorios prácticos, recorridos por proyectos comunitarios de la región, espacios de descanso y momentos culturales, porque creemos que el trabajo social también se sostiene con alegría y comunidad.',
+                'La metodología está a cargo del Colectivo Telar, un equipo que diseña encuentros participativos con dinámicas visuales, trabajo en pequeños grupos y acuerdos claros de cuidado.',
+            ],
+        },
+        facts: [
+            { value: '3', label: 'días de trabajo' },
+            { value: '14', label: 'organizaciones' },
+            { value: '3', label: 'idiomas con interpretación' },
+        ],
+        foundation: {
+            title: 'Quién convoca',
+            description: 'Fundada en Oaxaca en 2012, la <strong>Fundación Vereda Clara</strong> impulsa proyectos de educación, salud comunitaria y economía local encabezados por mujeres. Además de otorgar donativos, ofrece mentorías, formación en gestión y espacios de intercambio para que organizaciones de distintos países aprendan unas de otras.',
+        },
+    },
     organizations: {
-        title: 'ORGANIZACIONES PARTICIPANTES',
+        title: 'Organizaciones participantes',
+        intro: 'Catorce organizaciones de la región comparten proyecto, pregunta y herramienta.',
+        filtersLabel: 'Filtrar por región',
+        regions: {
+            all: 'Todas',
+            mx: 'México',
+            ca: 'Centroamérica y Caribe',
+            sa: 'Sudamérica',
+            rg: 'Redes regionales y globales',
+        },
+        visitSite: 'Sitio web de',
+        results: 'Mostrando {n} de {total} organizaciones',
         participants: participantsFor('es'),
     },
     faq: {
-        title: 'PREGUNTAS FRECUENTES',
+        title: 'Preguntas frecuentes',
         faqs: [
             {
                 title: '¿Dónde será el encuentro?',
@@ -145,11 +176,18 @@ export const es = {
                 title: '¿Se tomarán fotos durante el encuentro?',
                 content: 'Habrá registro fotográfico solo de las actividades grupales. Podrás elegir en tu gafete si prefieres no aparecer en fotos.',
             },
-            {
-                title: '¿A quién contacto si tengo dudas?',
-                content: 'Al equipo del encuentro: <strong>+52 000 000 0000</strong> / <a href="#">logistica@encuentrovereda.example</a>',
-            },
         ],
+        contact: {
+            title: '¿Tu pregunta no está aquí?',
+            text: 'Escribe o llama al equipo del encuentro. Respondemos de lunes a viernes.',
+            phone: '+52 000 000 0000',
+            email: 'logistica@encuentrovereda.example',
+        },
+    },
+    postEvent: {
+        title: 'Después del encuentro',
+        description: 'Al terminar compartiremos aquí lo que dejó el camino:',
+        eventList: ['Galería de imágenes', 'Video', 'Redes sociales', 'Relatoría gráfica', 'Testimonios'],
     },
     notFound: {
         title: 'Página no encontrada',
@@ -158,15 +196,10 @@ export const es = {
     },
     og: {
         title: 'Encuentro Vereda 2027 — Fundación Vereda Clara',
-        description: 'Caminos que se cruzan: aprender, crear y cuidar en red. Oaxaca, México, octubre de 2027.',
-        imageAlt: 'Ilustración del Encuentro Vereda 2027 de la Fundación Vereda Clara',
+        description: 'Caminos que se cruzan: aprender, crear y cuidar en red. Oaxaca, México, 6 al 8 de octubre de 2027.',
+        imageAlt: 'Encuentro Vereda 2027, del 6 al 8 de octubre en Oaxaca de Juárez',
         siteName: 'Encuentro Vereda',
         locale: 'es_MX',
-    },
-    postEvent: {
-        title: 'Después del encuentro',
-        description: 'Al terminar el encuentro compartiremos aquí algunos recuerdos. Te invitamos a volver pronto.',
-        eventList: ['Galería de imágenes', 'Video', 'Redes sociales', 'Relatoría gráfica', 'Testimonios'],
     },
     a11y: {
         skipToContent: 'Saltar al contenido',
@@ -178,25 +211,23 @@ export const es = {
         switchToEs: 'Cambiar a español',
         switchToEn: 'Switch to English',
         switchToPt: 'Mudar para português',
-        heroImageAlt: 'Ilustración de un paisaje con colinas, un río y aves del Encuentro Vereda 2027',
+        homeLink: 'Encuentro Vereda 2027, ir al inicio',
+        heroImageAlt: 'Ilustración de una vereda que sube entre colinas hacia un sol de cempasúchil',
         logoFoundationAlt: 'Logotipo de la Fundación Vereda Clara',
         logoEventAlt: 'Logotipo del Encuentro Vereda 2027',
         logoFacilitatorAlt: 'Logotipo del Colectivo Telar',
-        aboutIllustrationAlt: 'Ilustración de plantas y sol sobre colinas',
-        countdownLabel: 'Cuenta regresiva para el evento',
-        prevDay: 'Día anterior',
-        nextDay: 'Día siguiente',
-        faqBirdsAlt: 'Ilustración decorativa de aves',
-        faqIllustrationAlt: 'Ilustración decorativa de montañas y plantas',
-        closeDialog: 'Cerrar información',
-        postEventLandscapeAlt: 'Ilustración de paisaje',
+        aboutIllustrationAlt: 'Ilustración de tres caminos de colores que se cruzan',
+        countdownLabel: 'Cuenta regresiva para el encuentro',
     },
     footer: {
         foundation: {
-            title: 'FUNDACIÓN\nVEREDA CLARA',
+            title: 'Fundación Vereda Clara',
             description: `<p>La información que compartas en el registro solo se usará para preparar tu viaje, tu hospedaje y las actividades del Encuentro Vereda. Puedes pedir que la eliminemos en cualquier momento escribiendo al equipo del encuentro.</p>
 <p>Este sitio es una demostración: la Fundación Vereda Clara y el Encuentro Vereda son ficticios.</p>`,
         },
+        privacyTitle: 'Tus datos',
+        followTitle: 'Síguenos',
+        facilitatorLabel: 'Metodología',
         social: {
             facebook: '#',
             instagram: '#',
