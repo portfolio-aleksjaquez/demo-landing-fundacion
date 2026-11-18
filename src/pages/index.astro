@@ -1,0 +1,26 @@
+---
+import { withBase } from "@/i18n/ui";
+const target = withBase("es/");
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="refresh" content={`0; url=${target}`} />
+        <link rel="canonical" href={target} />
+        <link rel="icon" type="image/svg+xml" href={withBase("favicon.svg")} />
+        <link rel="alternate icon" type="image/x-icon" href={withBase("favicon.ico")} />
+        <title>Fundación Vereda Clara</title>
+    </head>
+    <body>
+        <a href={target}>Ir al sitio en español</a>
+    </body>
+</html>
+<style>
+    html,
+    body {
+        margin: 0;
+        background-color: #95b5b9;
+    }
+</style>

@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+:root {
+    --color-primary: #2c2d2f;
+    --color-secondary: #fff;
+    --bg-primary: #405950;
+    --bg-secondary: #95b5b9;
+    --bg-tertiary: #b1cccf;
+    --bg-quaternary: #bcd7da;
+    --bg-red: #ca161a;
+    --bg-red2: #db3f2a;
+    --bg-salmon: #d86c62;
+    --font-display: "Cormorant Garamond", Georgia, serif;
+    --font-body: "Jost", system-ui, -apple-system, sans-serif;
+}
+
+
+html {
+    scroll-behavior: smooth;
+    /*scroll-padding-top: 4rem;*/
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-variant-numeric: lining-nums;
+}
+
+h1,
+h2,
+h4,
+h5,
+h6 {
+    font-family: var(--font-display);
+    font-weight: 700;
+}
+
+h2 {
+    font-size: clamp(1.1rem, 2.5vw, 1.75rem);
+}
+h3 {
+    text-transform: uppercase;
+    font-size: clamp(1.2rem, 2vw, 2.25rem);
+}
+
+a {
+    text-decoration: underline;
+
+    &:hover {
+        opacity: 0.6;
+    }
+}
+
+p {
+    margin-block-end: 1em;
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: clamp(0.4rem, 3.5vw, 1.1rem);
+}
+
+li {
+    margin-bottom: 0.6rem;
+    list-style: inside;
+}
+
+.skip-to-content {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--color-primary);
+    color: var(--color-secondary);
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 0 0 0.5rem 0;
+
+    &:focus {
+        left: 0;
+    }
+}
+
+:focus-visible {
+    outline: 3px solid var(--bg-primary);
+    outline-offset: 2px;
+}
+
+details {
+    font-size: clamp(0.7rem, 1.7vw, 1.1rem);
+    border: none;
+    border-bottom: solid 1px;
+    background-color: transparent;
+    border-radius: 0;
+
+    > div {
+        margin-block-end: 1em;
+        font-family: var(--font-body);
+        font-weight: 400;
+        font-size: clamp(0.4rem, 3.5vw, 1.1rem);
+    }
+}

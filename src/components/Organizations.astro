@@ -1,0 +1,297 @@
+---
+import type { OrganizationsTexts, A11yTexts } from "@/i18n/ui";
+import { Image } from "astro:assets";
+import mapaImg from "@/assets/img/O-Mapa.svg";
+import ilustracionImg from "@/assets/img/O-Ilustracion.svg";
+import nubeImg from "@/assets/img/O-Nube.svg";
+
+import IconoFacebook from "@/Icons/IconoFacebook.astro";
+import IconoInstagram from "@/Icons/IconoInstagram.astro";
+import IconoTwitter from "@/Icons/IconoTwitter.astro";
+import IconoLinkedin from "@/Icons/IconoLinkedin.astro";
+import IconoYoutube from "@/Icons/IconoYoutube.astro";
+
+interface Props {
+    texts: OrganizationsTexts;
+    a11yTexts: A11yTexts;
+}
+
+const { texts, a11yTexts } = Astro.props as Props;
+const logos = import.meta.glob<{ default: ImageMetadata }>("/src/assets/**/*.{jpeg,jpg,png,gif,webp,svg}");
+---
+
+<section id="organizaciones" class="px-6 py-16 relative scroll-mt-14">
+    <div class="max-w-5xl mx-auto text-center">
+        <div class="org-header">
+            <Image src={mapaImg} alt="" class="org-mapa" aria-hidden="true" />
+            <h2 class="org-title">{texts.title}</h2>
+            <Image src={nubeImg} alt="" class="org-nube" aria-hidden="true" />
+            <Image src={ilustracionImg} alt="" class="org-ilustracion" aria-hidden="true" />
+        </div>
+        <div class="flex flex-wrap justify-center gap-2 text-lg font-light h-87.5 sm:h-full z-10 relative overflow-y-auto overflow-x-hidden md:overflow-y-hidden">
+            {
+                texts.participants.map((participant, index) => (
+                    <div class="org-item">
+                        <button
+                            type="button"
+                            class="logo-btn cursor-pointer transition-transform hover:scale-110 focus:outline-none flex items-center justify-center md:p-4 p-2"
+                            aria-haspopup="dialog"
+                            aria-controls={`dialog-${index}`}
+                        >
+                            <Image src={logos[`/${participant.logo}`]()} alt={participant.name} class="logo h-14 md:h-20 w-auto" />
+                        </button>
+
+                        <dialog
+                            id={`dialog-${index}`}
+                            class="org-dialog m-auto backdrop:bg-black/70 backdrop:backdrop-blur-sm text-(--color-secondary) p-8 md:p-12 rounded-2xl max-w-sm w-[90%] bg-transparent"
+                            data-bg-image={participant.bgImage}
+                            aria-labelledby={`dialog-title-${index}`}
+                        >
+                            <div class="h-135 overflow-y-scroll [&::-webkit-scrollbar]:w-0 [&::-webkit-scrollbar-track]:bg-transparent">
+                                <button
+                                    type="button"
+                                    class="close-btn absolute top-0 right-0 bg-(--color-secondary) text-(--color-primary) rounded-full w-8 h-8 flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity font-bold shadow-md"
+                                    aria-label={a11yTexts.closeDialog}
+                                >
+                                    ✕
+                                </button>
+                                <div class="relative flex flex-col gap-4 items-center text-center">
+                                    <Image src={logos[`/${participant.logo}`]()} alt={participant.name} class="logo max-w-full h-auto bg-white/90 rounded-xl px-4 py-2" />
+                                    <h3 class="text-2xl font-bold" id={`dialog-title-${index}`}>
+                                        {participant.url ? (
+                                            <a class="no-underline! hover:underline!" href={participant.url}>
+                                                {participant.name}
+                                            </a>
+                                        ) : (
+                                            participant.name
+                                        )}
+                                    </h3>
+                                    <span class="text-sm font-semibold uppercase tracking-widest text-(--color-secondary)/80 border-b border-(--color-secondary)/30 pb-2 inline-block">
+                                        {participant.country}
+                                    </span>
+                                    <p class="text-base leading-relaxed text-balance">{participant.description}</p>
+                                    {participant.social && (
+                                        <div class=" flex gap-4">
+                                            {participant.social.twitter && (
+                                                <a
+                                                    href={participant.social.twitter}
+                                                    class="text-(--color-secondary) hover:text-(--color-secondary)/80 transition-colors hover:scale-110"
+                                                    aria-label={`X (Twitter) - ${participant.name}`}
+                                                >
+                                                    <IconoTwitter />
+                                                </a>
+                                            )}
+                                            {participant.social.facebook && (
+                                                <a
+                                                    href={participant.social.facebook}
+                                                    class="text-(--color-secondary) hover:text-(--color-secondary)/80 transition-colors hover:scale-110"
+                                                    aria-label={`Facebook - ${participant.name}`}
+                                                >
+                                                    <IconoFacebook />
+                                                </a>
+                                            )}
+                                            {participant.social.instagram && (
+                                                <a
+                                                    href={participant.social.instagram}
+                                                    class="text-(--color-secondary) hover:text-(--color-secondary)/80 transition-colors hover:scale-110"
+                                                    aria-label={`Instagram - ${participant.name}`}
+                                                >
+                                                    <IconoInstagram />
+                                                </a>
+                                            )}
+                                            {participant.social.linkedin && (
+                                                <a
+                                                    href={participant.social.linkedin}
+                                                    class="text-(--color-secondary) hover:text-(--color-secondary)/80 transition-colors hover:scale-110"
+                                                    aria-label={`LinkedIn - ${participant.name}`}
+                                                >
+                                                    <IconoLinkedin />
+                                                </a>
+                                            )}
+                                            {participant.social.youtube && (
+                                                <a
+                                                    href={participant.social.youtube}
+                                                    class="text-(--color-secondary) hover:text-(--color-secondary)/80 transition-colors hover:scale-110"
+                                                    aria-label={`YouTube - ${participant.name}`}
+                                                >
+                                                    <IconoYoutube />
+                                                </a>
+                                            )}
+                                        </div>
+                                    )}
+                                    {participant.image && logos[`/${participant.image}`] && <Image src={logos[`/${participant.image}`]()} alt={participant.name} height={80} class="mt-4 rounded-lg" />}
+                                </div>
+                            </div>
+                        </dialog>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+</section>
+
+<style>
+    .org-header {
+        position: relative;
+        width: 100%;
+        /* min-height: 1054px; */
+        margin-bottom: 3rem;
+        overflow: visible;
+    }
+
+    .org-mapa {
+        width: 80%;
+        height: auto;
+        object-fit: contain;
+    }
+
+    .org-title {
+        position: absolute;
+        top: 42%;
+        left: 45%;
+        transform: translateY(-50%);
+        font-size: clamp(1.1rem, 2.5vw, 1.75rem);
+        font-weight: 300;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        color: var(--color-primary);
+        text-align: left;
+        line-height: 1.4;
+        margin: 0;
+    }
+
+    .org-nube {
+        position: absolute;
+        top: 17%;
+        right: 0;
+        width: 28%;
+        height: auto;
+        object-fit: contain;
+    }
+
+    .org-ilustracion {
+        position: absolute;
+        top: 54%;
+        right: 2%;
+        width: 33%;
+        height: auto;
+        object-fit: contain;
+    }
+
+    dialog[data-bg-image="1"] {
+        background-image: url("../assets/img/O-Plasta1.svg");
+        background-size: 100% 100%;
+        background-position: center;
+    }
+
+    dialog[data-bg-image="2"] {
+        background-image: url("../assets/img/O-Plasta2.svg");
+        background-size: 100% 100%;
+        background-position: center;
+    }
+    dialog[data-bg-image="3"] {
+        background-image: url("../assets/img/O-Plasta3.svg");
+        background-size: 100% 100%;
+        background-position: center;
+    }
+    dialog[data-bg-image="4"] {
+        background-image: url("../assets/img/O-Plasta4.svg");
+        background-size: 100% 100%;
+        background-position: center;
+    }
+    dialog[data-bg-image="5"] {
+        background-image: url("../assets/img/O-Plasta5.svg");
+        background-size: 100% 100%;
+        background-position: center;
+    }
+    dialog[data-bg-image="6"] {
+        background-image: url("../assets/img/O-Plasta6.svg");
+        background-size: 100% 100%;
+        background-position: center;
+    }
+    dialog[data-bg-image="7"] {
+        background-image: url("../assets/img/O-Plasta7.svg");
+        background-size: 100% 100%;
+        background-position: center;
+    }
+
+    @media (max-width: 640px) {
+        .org-header {
+            min-height: 220px;
+            margin-bottom: 5rem;
+        }
+
+        .org-title {
+            font-size: clamp(0.75rem, 4vw, 1rem);
+            letter-spacing: 0.1em;
+        }
+    }
+
+    .org-dialog::-webkit-scrollbar {
+        width: 8px;
+    }
+    .org-dialog::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .org-dialog::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+    }
+
+    .org-dialog[open] {
+        animation: modalFadeIn 0.2s ease-out forwards;
+    }
+
+    @keyframes modalFadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95) translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+</style>
+
+<script>
+    const initOrganizations = () => {
+        const orgItems = document.querySelectorAll(".org-item");
+
+        orgItems.forEach((item) => {
+            const btn = item.querySelector(".logo-btn") as HTMLButtonElement;
+            const dialog = item.querySelector(".org-dialog") as HTMLDialogElement;
+            const closeBtn = item.querySelector(".close-btn") as HTMLButtonElement;
+
+            if (!btn || !dialog) return;
+
+            // Abrir modal
+            btn.addEventListener("click", () => {
+                dialog.showModal();
+                document.body.style.overflow = "hidden";
+            });
+
+            if (closeBtn) {
+                closeBtn.addEventListener("click", () => {
+                    dialog.close();
+                });
+            }
+
+            dialog.addEventListener("click", (e) => {
+                const rect = dialog.getBoundingClientRect();
+
+                const isInDialog = rect.top <= e.clientY && e.clientY <= rect.top + rect.height && rect.left <= e.clientX && e.clientX <= rect.left + rect.width;
+
+                if (!isInDialog) {
+                    dialog.close();
+                }
+            });
+
+            dialog.addEventListener("close", () => {
+                document.body.style.overflow = "";
+            });
+        });
+    };
+
+    document.addEventListener("astro:page-load", initOrganizations);
+</script>

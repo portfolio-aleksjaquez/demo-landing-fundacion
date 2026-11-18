@@ -1,0 +1,93 @@
+---
+import type { CountdownTexts, A11yTexts } from "@/i18n/ui";
+import { Image } from "astro:assets";
+import lineaImg from "@/assets/img/C-Linea.svg";
+import cloudImg from "@/assets/img/S-Nube.svg";
+
+interface Props {
+    texts: CountdownTexts;
+    a11yTexts: A11yTexts;
+}
+
+const { texts, a11yTexts } = Astro.props as Props;
+---
+
+<section id="countdown" class="py-12 text-center scroll-mt-14 relative overflow-x-hidden">
+    <Image src={cloudImg} alt="" class="h-24 w-auto object-contain relative md:absolute md:-right-28 md:top-10 md:h-32 block z-1 m-auto mb-4" aria-hidden="true" />
+    <h2 class="text-xl sm:text-3xl font-bold mb-6 uppercase">{texts.title}</h2>
+    <div
+        id="countdown-container"
+        data-target={texts.targetDate}
+        class="flex justify-center items-center gap-4 text-4xl sm:text-8xl font-light z-10 relative"
+        role="timer"
+        aria-live="polite"
+        aria-atomic="true"
+        aria-label={a11yTexts.countdownLabel}
+    >
+        <div class="flex flex-col items-center">
+            <span id="days" class="countdown-number">00</span>
+            <span class="text-sm uppercase tracking-wide mt-2">{texts.labels.days}</span>
+        </div>
+        <Image src={lineaImg} alt="" class="h-12 w-auto object-contain md:h-24" aria-hidden="true" />
+        <div class="flex flex-col items-center">
+            <span id="hours" class="countdown-number">00</span>
+            <span class="text-sm uppercase tracking-wide mt-2">{texts.labels.hours}</span>
+        </div>
+        <Image src={lineaImg} alt="" class="h-12 w-auto object-contain md:h-24" aria-hidden="true" />
+        <div class="flex flex-col items-center">
+            <span id="minutes" class="countdown-number">00</span>
+            <span class="text-sm uppercase tracking-wide mt-2">{texts.labels.minutes}</span>
+        </div>
+    </div>
+
+    <h3 class="mt-6 text-base sm:text-lg text-(--bg-primary)">{texts.address[0]}, <a class="text-(--bg-primary)!" href={texts.link}>{texts.address[1]}</a></h3>
+</section>
+
+<script>
+    let countdownInterval: ReturnType<typeof setInterval> | undefined;
+
+    const initCountdown = () => {
+        if (countdownInterval) {
+            clearInterval(countdownInterval);
+        }
+
+        const container = document.getElementById("countdown-container");
+        if (container) {
+            const targetDateString = container.dataset.target;
+            if (targetDateString) {
+                const targetDate = new Date(targetDateString).getTime();
+
+                const updateCountdown = () => {
+                    const now = new Date().getTime();
+                    const distance = targetDate - now;
+
+                    if (distance < 0) return;
+
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+
+                    const daysElement = document.getElementById("days");
+                    const hoursElement = document.getElementById("hours");
+                    const minutesElement = document.getElementById("minutes");
+
+                    if (daysElement) daysElement.innerText = days.toString().padStart(2, "0");
+                    if (hoursElement) hoursElement.innerText = hours.toString().padStart(2, "0");
+                    if (minutesElement) minutesElement.innerText = minutes.toString().padStart(2, "0");
+                };
+
+                updateCountdown();
+
+                countdownInterval = setInterval(updateCountdown, 60000);
+            }
+        }
+    };
+    document.addEventListener("astro:page-load", initCountdown);
+</script>
+
+<style>
+    .countdown-number {
+        font-family: var(--font-display);
+        font-weight: 700;
+    }
+</style>

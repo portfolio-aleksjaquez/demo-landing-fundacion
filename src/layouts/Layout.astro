@@ -1,0 +1,120 @@
+---
+import "@fontsource/jost/300.css";
+import "@fontsource/jost/400.css";
+import "@fontsource/jost/500.css";
+import "@fontsource/cormorant-garamond/600.css";
+import "@fontsource/cormorant-garamond/700.css";
+import "@/styles/global.css";
+import NavBar from "@/components/NavBar.astro";
+import Footer from "@/components/Footer.astro";
+import { ui, withBase, type LanguageKeys } from "@/i18n/ui";
+import { ClientRouter } from "astro:transitions";
+import BirdAnimation from "@/components/BirdAnimation.astro";
+
+interface Props {
+    lang: LanguageKeys;
+    title: string;
+    ogImage?: string;
+}
+const { lang, title, ogImage } = Astro.props;
+const siteUrl = new URL(import.meta.env.BASE_URL, Astro.site).toString().replace(/\/$/, "");
+const ogImageUrl = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/og/${lang}.png`;
+const canonicalUrl = `${siteUrl}/${lang}/`;
+const t = ui[lang];
+const langAlternates: { lang: LanguageKeys; href: string }[] = [
+    { lang: "es", href: `${siteUrl}/es/` },
+    { lang: "en", href: `${siteUrl}/en/` },
+    { lang: "pt", href: `${siteUrl}/pt/` },
+];
+const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${canonicalUrl}#webpage`,
+    url: canonicalUrl,
+    name: t.og.title,
+    description: t.og.description,
+    inLanguage: lang,
+    isPartOf: {
+        "@type": "WebSite",
+        "@id": `${siteUrl}/#website`,
+        url: siteUrl,
+        name: t.og.siteName,
+        publisher: {
+            "@type": "Organization",
+            name: t.nav.title,
+        },
+    },
+    primaryImageOfPage: {
+        "@type": "ImageObject",
+        url: ogImageUrl,
+        width: 1200,
+        height: 630,
+        caption: t.og.imageAlt,
+    },
+};
+---
+
+<html lang={lang}>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content={t.a11y.metaDescription} />
+        <meta name="theme-color" content="#405950" />
+        <title>{title}</title>
+        <link rel="canonical" href={canonicalUrl} />
+        {langAlternates.map((alternate) => (
+            <link rel="alternate" hreflang={alternate.lang} href={alternate.href} />
+        ))}
+        <link rel="alternate" hreflang="x-default" href={`${siteUrl}/es/`} />
+        <link rel="icon" type="image/svg+xml" href={withBase("favicon.svg")} />
+        <link rel="icon" type="image/png" sizes="32x32" href={withBase("favicon-32x32.png")} />
+        <link rel="alternate icon" type="image/x-icon" href={withBase("favicon.ico")} />
+        <link rel="apple-touch-icon" sizes="180x180" href={withBase("apple-touch-icon.png")} />
+        <link rel="manifest" href={withBase("site.webmanifest")} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:site_name" content={t.og.siteName} />
+        <meta property="og:title" content={t.og.title} />
+        <meta property="og:description" content={t.og.description} />
+        <meta property="og:image" content={ogImageUrl} />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content={t.og.imageAlt} />
+        <meta property="og:locale" content={t.og.locale} />
+        {langAlternates.filter((alternate) => alternate.lang !== lang).map((alternate) => (
+            <meta property="og:locale:alternate" content={ui[alternate.lang].og.locale} />
+        ))}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={t.og.title} />
+        <meta name="twitter:description" content={t.og.description} />
+        <meta name="twitter:image" content={ogImageUrl} />
+        <meta name="twitter:image:alt" content={t.og.imageAlt} />
+        <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+        <ClientRouter />
+    </head>
+    <body class="relative">
+        <a href="#main-content" class="skip-to-content">{t.a11y.skipToContent}</a>
+        <NavBar texts={t.nav} a11yTexts={t.a11y} />
+        <main id="main-content" class="pt-20 bg-(--bg-tertiary)">
+            <slot />
+        </main>
+        <Footer texts={t.footer} a11yTexts={t.a11y} />
+        <BirdAnimation />
+    </body>
+</html>
+
+<script is:inline>
+    let scrollPosition = 0;
+
+    document.addEventListener("astro:before-preparation", () => {
+        scrollPosition = window.scrollY;
+    });
+
+    document.addEventListener("astro:after-swap", () => {
+        window.scrollTo({
+            top: scrollPosition,
+            behavior: "instant"
+        });
+    });
+</script>

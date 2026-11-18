@@ -1,0 +1,63 @@
+---
+import type { FooterTexts, A11yTexts } from "@/i18n/ui";
+import { Image } from "astro:assets";
+
+import IconoFacebook from "@/Icons/IconoFacebook.astro";
+import IconoInstagram from "@/Icons/IconoInstagram.astro";
+import LogoFoundation from "@/assets/logos/logo-fundacion-light.svg";
+import LogoEvent from "@/assets/logos/logo-encuentro-light.svg";
+import LogoFacilitator from "@/assets/logos/logo-facilitadora.svg";
+
+interface Props {
+    texts: FooterTexts;
+    a11yTexts: A11yTexts;
+}
+
+const { texts, a11yTexts } = Astro.props as Props;
+---
+
+<footer class="bg-(--bg-primary) px-6 py-12 text-center text-sm border-t border-gray-300 text-(--color-secondary) relative">
+    <div class="flex justify-center mb-4 md:justify-start gap-4 md:relative md:top-10">
+        {
+            texts.social.facebook && (
+                <a
+                    href={texts.social.facebook}
+                    class="text-(--color-secondary) hover:text-(--color-secondary)/80 transition-colors hover:scale-110"
+                    aria-label={`Facebook - ${texts.foundation.title.replace("\n", " ")}`}
+                >
+                    <IconoFacebook />
+                </a>
+            )
+        }
+        {
+            texts.social.instagram && (
+                <a
+                    href={texts.social.instagram}
+                    class="text-(--color-secondary) hover:text-(--color-secondary)/80 transition-colors hover:scale-110"
+                    aria-label={`Instagram - ${texts.foundation.title.replace("\n", " ")}`}
+                >
+                    <IconoInstagram />
+                </a>
+            )
+        }
+    </div>
+    <div class="max-w-3xl mx-auto flex flex-col justify-between items-center mt-10">
+        <div class="text-left">
+            <div set:html={texts.foundation.description} />
+        </div>
+        <div class="logos flex items-center justify-center gap-4 mt-6">
+            <Image src={LogoFoundation} alt={a11yTexts.logoFoundationAlt} class="w-[50%] md:w-60" />
+            <Image src={LogoEvent} alt={a11yTexts.logoEventAlt} class="w-[45%] md:w-48" />
+        </div>
+    </div>
+    <div class="mt-8 text-center">
+        <p>{texts.copyright}</p>
+    </div>
+    <Image src={LogoFacilitator} alt={a11yTexts.logoFacilitatorAlt} class="w-14 mx-auto mt-6 md:mt-0 md:absolute md:bottom-5 md:right-5" />
+</footer>
+
+<style>
+    a {
+        color: var(--color-secondary);
+    }
+</style>

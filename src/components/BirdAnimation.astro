@@ -1,0 +1,184 @@
+---
+import birdImg from "@/assets/img/ave.svg";
+import { Image } from "astro:assets";
+---
+
+<div id="bird-path-container" class="absolute -top-10 sm:top-0 left-0 w-full h-full pointer-events-none overflow-clip" style="z-index: 49;" aria-hidden="true">
+    <svg id="bird-path-svg" class="absolute top-0 left-0 w-[110%] h-full" viewBox="0 0 100 800" preserveAspectRatio="none" aria-hidden="true">
+        <path
+            id="bird-flight-path"
+            fill="none"
+            stroke="none"
+            d="M 68 10
+                C 72 40 30 55 28 90
+                C 26 115 65 130 68 160
+                C 71 185 35 195 32 220
+                C 29 250 62 265 65 295
+                C 68 320 25 333 22 363
+                C 19 393 58 400 72 420
+                C 88 442 90 460 75 475
+                C 60 490 30 488 22 505
+                C 14 522 25 545 40 558
+                C 55 571 70 568 75 585
+                C 80 602 65 622 50 635
+                C 35 648 28 660 32 678
+                C 36 696 74 707.5 79 724.5
+                C 84 741.5 45 757 40 774
+                C 35 791 48 800 50 800"
+        ></path>
+    </svg>
+</div>
+
+<div id="bird" class="fixed top-0 left-0 w-17.5 sm:w-[clamp(90px,9vw,180px)] pointer-events-none" style="z-index: 49; transform-origin: center center; perspective: 400px;" aria-hidden="true">
+    <Image src={birdImg} alt="" class="w-full h-auto select-none" loading="eager" />
+</div>
+
+<script>
+    import gsap from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+    import { MotionPathPlugin } from "gsap/MotionPathPlugin";
+
+    gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
+
+    const BIRD_CONFIG = {
+        scrubSpeed: 2,
+
+        autoRotateOffset: -90
+    };
+
+    function initBirdAnimation() {
+        const bird = document.getElementById("bird") as HTMLElement | null;
+        const pathEl = document.getElementById("bird-flight-path") as SVGPathElement | null;
+        const svgEl = document.getElementById("bird-path-svg") as SVGSVGElement | null;
+
+        if (!bird || !pathEl || !svgEl) return;
+
+        let ctx: ReturnType<typeof gsap.context> | null = null;
+
+        const birdImg = bird.querySelector("img") as HTMLImageElement | null;
+
+        function buildTimeline(): void {
+            if (ctx) {
+                ctx.revert();
+                ctx = null;
+            }
+
+            const docRatio = document.documentElement.scrollHeight / window.innerWidth;
+            const vbHeight = 100 * docRatio; // alto viewBox proporcional al doc real
+            svgEl!.setAttribute("viewBox", `0 0 100 ${vbHeight}`);
+
+            const scale = vbHeight / 800;
+            const rawD = `
+            M 68,${10 * scale}
+            C 72,${40 * scale} 30,${55 * scale} 28,${90 * scale}
+            C 26,${115 * scale} 65,${130 * scale} 68,${160 * scale}
+            C 71,${185 * scale} 35,${195 * scale} 32,${220 * scale}
+            C 29,${250 * scale} 62,${265 * scale} 65,${295 * scale}
+            C 68,${320 * scale} 25,${333 * scale} 22,${363 * scale}
+            C 19,${393 * scale} 58,${400 * scale} 72,${420 * scale}
+            C 88,${442 * scale} 90,${460 * scale} 75,${475 * scale}
+            C 60,${490 * scale} 30,${488 * scale} 22,${505 * scale}
+            C 14,${522 * scale} 25,${545 * scale} 40,${558 * scale}
+            C 55,${571 * scale} 70,${568 * scale} 75,${585 * scale}
+            C 80,${602 * scale} 65,${622 * scale} 50,${635 * scale}
+            C 35,${648 * scale} 28,${660 * scale} 32,${678 * scale}
+            C 36,${696 * scale} 74,${707.5 * scale} 79,${724.5 * scale}
+            C 84,${741.5 * scale} 45,${757 * scale} 40,${774 * scale}
+            C 35,${791 * scale} 48,${800 * scale} 50,${800 * scale}
+            `;
+            pathEl!.setAttribute("d", rawD);
+
+            const { scrubSpeed } = BIRD_CONFIG;
+            const totalLength = pathEl!.getTotalLength();
+
+            const startPt = pathEl!.getPointAtLength(0);
+            const svgRect = svgEl!.getBoundingClientRect();
+            gsap.set(bird, {
+                x: svgRect.left + startPt.x * (svgRect.width / 100) - (bird?.offsetWidth ?? 0) / 2,
+                y: svgRect.top + startPt.y * (svgRect.height / vbHeight) - (bird?.offsetHeight ?? 0) / 2
+            });
+
+            const stopAt = document.documentElement.scrollHeight - document.documentElement.scrollHeight * 0.001;
+
+            ctx = gsap.context(() => {
+                ScrollTrigger.create({
+                    trigger: document.documentElement,
+                    start: "top top",
+                    end: stopAt,
+                    scrub: scrubSpeed,
+                    onUpdate(self) {
+                        const curLen = self.progress * totalLength;
+                        const pt = pathEl!.getPointAtLength(curLen);
+                        const rect = svgEl!.getBoundingClientRect();
+                        const scaleX = rect.width / 100;
+                        const scaleY = rect.height / vbHeight;
+                        const vx = rect.left + pt.x * scaleX - (bird?.offsetWidth ?? 0) / 2;
+                        const vy = rect.top + pt.y * scaleY - (bird?.offsetHeight ?? 0) / 2;
+
+                        gsap.set(bird, { x: vx, y: vy });
+
+                        const delta = Math.max(totalLength * 0.012, 3);
+                        const pA = pathEl!.getPointAtLength(Math.max(curLen - delta, 0));
+                        const pB = pathEl!.getPointAtLength(Math.min(curLen + delta, totalLength));
+
+                        const dx = (pB.x - pA.x) * scaleX;
+                        const dy = (pB.y - pA.y) * scaleY;
+
+                        const lateralTilt = Math.atan2(-dx, Math.abs(dy)) * (180 / Math.PI);
+
+                        const tilt = Math.max(-65, Math.min(65, lateralTilt));
+
+                        const target = birdImg ?? bird;
+                        const rotateX = self.direction === 1 ? 180 : 0;
+                        const mirror = self.direction === 1 ? -1 : 1;
+                        gsap.to(target, {
+                            rotateX,
+                            scaleX: mirror,
+                            rotateZ: tilt,
+                            duration: 0.5,
+                            ease: "power2.out",
+                            overwrite: "auto"
+                        });
+                    }
+                });
+            });
+        }
+
+        function setup(): void {
+            requestAnimationFrame(() => {
+                buildTimeline();
+                ScrollTrigger.refresh();
+            });
+        }
+
+        if (document.readyState === "complete") {
+            setup();
+        } else {
+            window.addEventListener("load", setup, { once: true });
+        }
+
+        let resizeTimer: ReturnType<typeof setTimeout> | null = null;
+        function onResize(): void {
+            if (resizeTimer) clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                buildTimeline();
+                ScrollTrigger.refresh();
+            }, 250);
+        }
+        window.addEventListener("resize", onResize);
+
+        document.addEventListener(
+            "astro:before-preparation",
+            () => {
+                window.removeEventListener("resize", onResize);
+                if (ctx) {
+                    ctx.revert();
+                    ctx = null;
+                }
+            },
+            { once: true }
+        );
+    }
+
+    document.addEventListener("astro:page-load", initBirdAnimation);
+</script>

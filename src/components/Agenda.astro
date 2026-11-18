@@ -1,0 +1,504 @@
+---
+import type { AgendaTexts, A11yTexts } from "@/i18n/ui";
+import diaBg from "@/assets/img/A-dia.svg";
+import flechaImg from "@/assets/img/A-Flecha.svg";
+import day1Image from "@/assets/img/A-Day1.svg";
+import day2Image from "@/assets/img/A-Day2.svg";
+import day3Image from "@/assets/img/A-Day3.svg";
+import plastaImg from "@/assets/img/A-Plasta.svg";
+import birdImg from "@/assets/img/A-Pajaro.svg";
+import { Image } from "astro:assets";
+
+interface Props {
+    texts: AgendaTexts;
+    a11yTexts: A11yTexts;
+}
+
+const { texts, a11yTexts } = Astro.props as Props;
+const totalDays = texts.activities.length;
+
+const dayImages: Record<string, any> = {
+    "src/assets/img/A-Day1.svg": day1Image,
+    "src/assets/img/A-Day2.svg": day2Image,
+    "src/assets/img/A-Day3.svg": day3Image
+};
+---
+
+<section id="agenda" class="py-16 scroll-mt-14 mb-20 bg-(--bg-secondary)">
+    <div class="max-w-5xl mx-auto px-4">
+        <div class="agenda-header">
+            <div class="agenda-plasta">
+                <Image src={plastaImg} alt="" class="plasta-img" aria-hidden="true" />
+                <h2 class="agenda-title text-3xl sm:text-5xl">{texts.title}</h2>
+                <Image src={birdImg} alt="" class="perched-bird" aria-hidden="true" />
+            </div>
+        </div>
+
+        {
+            totalDays > 1 && (
+                <div class="carousel-dots" id="agenda-dots" role="tablist" aria-label={texts.title}>
+                    {texts.activities.map((activity, i) => (
+                        <button
+                            class:list={["dot", { "dot--active": i === 0 }]}
+                            data-index={i}
+                            role="tab"
+                            id={`agenda-tab-${i}`}
+                            aria-label={activity.day}
+                            aria-selected={i === 0 ? "true" : "false"}
+                            aria-controls={`agenda-panel-${i}`}
+                            tabindex={i === 0 ? 0 : -1}
+                        />
+                    ))}
+                </div>
+            )
+        }
+
+        <div class="carousel-outer relative" id="agenda-carousel">
+            <div class="carousel-track" id="agenda-track">
+                {
+                    texts.activities.map((activity, i) => (
+                        <article class="carousel-card" data-index={i} role="tabpanel" id={`agenda-panel-${i}`} aria-labelledby={`agenda-tab-${i}`}>
+                            <div class="day-container">
+                                <div class="day-content">
+                                    <h3 class="day-title">
+                                        {activity.day} - {activity.title}
+                                    </h3>
+
+                                    <div class="activity-table">
+                                        <div class="table-header">
+                                            <div class="header-left">
+                                                <span class="header-text">{texts.labels.activity}</span>
+                                            </div>
+                                            <div class="header-right">
+                                                <p class="header-objective">{activity.objective}</p>
+                                            </div>
+                                        </div>
+
+                                        {activity.events.map((event) => (
+                                            <div class="table-row">
+                                                <div class="row-left">
+                                                    <span class="activity-time">{event.time}</span>
+                                                </div>
+                                                <div class="row-right">
+                                                    <p class="activity-description">{event.title}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    ))
+                }
+            </div>
+
+            <div class="dayImg-container" id="agenda-day-img" aria-hidden="true">
+                {
+                    texts.activities.map(
+                        (activity, i) =>
+                            activity.image &&
+                            dayImages[activity.image] && (
+                                <Image src={dayImages[activity.image]} alt="" class:list={["dayImg", { "dayImg--active": i === 0 }]} data-index={i} aria-hidden="true" inferSize />
+                            )
+                    )
+                }
+            </div>
+
+            <button class="carousel-btn carousel-btn--prev" id="agenda-prev" aria-label={a11yTexts.prevDay} disabled>
+                <img src={flechaImg.src} alt="" class="flecha-img flecha-prev" aria-hidden="true" />
+            </button>
+
+            <button class="carousel-btn carousel-btn--next" id="agenda-next" aria-label={a11yTexts.nextDay}>
+                <img src={flechaImg.src} alt="" class="flecha-img flecha-next" aria-hidden="true" />
+            </button>
+        </div>
+    </div>
+</section>
+
+<style define:vars={{ bgUrl: `url(${diaBg.src})` }}>
+    .agenda-header {
+        margin-bottom: 2rem;
+        padding-top: 4rem;
+        overflow: visible;
+    }
+
+    .agenda-plasta {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        overflow: visible;
+    }
+
+    .plasta-img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .agenda-title {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: #fff;
+        margin: 0;
+        font-size: clamp(1.5rem, 6vw, 2.8rem);
+    }
+
+    .perched-bird {
+        position: absolute;
+        top: -25%;
+        left: 25%;
+        width: 10%;
+        height: auto;
+        object-fit: contain;
+    }
+
+    .carousel-outer {
+        position: relative;
+    }
+
+    .carousel-track {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+    }
+
+    .carousel-track::-webkit-scrollbar {
+        display: none;
+    }
+
+    .carousel-card {
+        flex: 0 0 100%;
+        scroll-snap-align: start;
+        padding: 0 3rem;
+        background-image: var(--bgUrl);
+        background-size: 90% 100%;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+
+    .day-container {
+        position: relative;
+        width: 100%;
+        min-height: 500px;
+    }
+
+    .day-content {
+        position: relative;
+        padding: 2rem 8rem 4rem;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .day-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #fff;
+        text-align: center;
+        margin-top: 3rem;
+        margin-bottom: 1.5rem;
+        letter-spacing: 0.1em;
+    }
+
+    .activity-table {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        color: #fff;
+    }
+
+    .table-header {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        padding-bottom: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .header-left {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+    }
+
+    .header-text {
+        font-size: clamp(0.4rem, 3vw, 0.875rem);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #b1cccf;
+    }
+
+    .header-subtext {
+        font-size: clamp(0.3rem, 3vw, 0.75rem);
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #b1cccf;
+    }
+
+    .header-right {
+        border-left: 1px solid rgba(255, 255, 255, 0.3);
+        padding-left: 1rem;
+    }
+
+    .table-row {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 1rem 0;
+    }
+
+    .table-row:last-child {
+        border-bottom: none;
+    }
+
+    .row-left {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding-right: 1rem;
+    }
+
+    .activity-time {
+        font-size: clamp(0.4rem, 2.5vw, 0.875rem);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #b1cccf;
+    }
+
+    .row-right {
+        border-left: 1px solid rgba(255, 255, 255, 0.3);
+        padding-left: 1rem;
+    }
+
+    .activity-description {
+        font-size: clamp(0.3rem, 3vw, 0.9rem);
+        line-height: 1.4;
+        color: #fff;
+        margin: 0;
+    }
+
+    .dayImg-container {
+        position: absolute;
+        top: 90%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        pointer-events: none;
+    }
+
+    .dayImg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .dayImg--active {
+        opacity: 1;
+        position: relative;
+    }
+
+    .carousel-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 3rem;
+        height: 3rem;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        z-index: 20;
+        padding: 0;
+        transition: opacity 0.2s ease;
+    }
+
+    .carousel-btn:hover:not(:disabled) {
+        opacity: 0.8;
+    }
+
+    .carousel-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+
+    .carousel-btn--prev {
+        left: -1rem;
+    }
+
+    .carousel-btn--next {
+        right: -1rem;
+    }
+
+    .flecha-img {
+        width: 2rem;
+        height: auto;
+        object-fit: contain;
+    }
+
+    .flecha-next {
+        transform: rotate(180deg);
+    }
+
+    .carousel-dots {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.6rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .dot {
+        width: 0.55rem;
+        height: 0.55rem;
+        border-radius: 50%;
+        border: none;
+        padding: 0;
+        background-color: var(--bg-primary);
+        opacity: 0.3;
+        cursor: pointer;
+        transition:
+            opacity 0.25s ease,
+            transform 0.25s ease;
+    }
+
+    .dot--active {
+        opacity: 1;
+        transform: scale(1.45);
+    }
+
+    .dot:hover:not(.dot--active) {
+        opacity: 0.6;
+    }
+
+    @media (max-width: 768px) {
+        .carousel-card {
+            padding: 0 1.5rem;
+            background-color: var(--bg-primary);
+            border-radius: 1rem;
+        }
+
+        .day-content {
+            padding: 2rem 0rem 4rem;
+        }
+
+        .dayImg-container {
+            top: 95%;
+        }
+
+        .table-header,
+        .table-row {
+            grid-template-columns: 1fr 3fr;
+        }
+
+        .carousel-btn--prev {
+            left: -12px;
+        }
+
+        .carousel-btn--next {
+            right: -12px;
+        }
+
+        .flecha-img {
+            width: 1.5rem;
+        }
+    }
+</style>
+
+<script>
+    const initAgenda = () => {
+        const track = document.getElementById("agenda-track") as HTMLDivElement;
+        const prevBtn = document.getElementById("agenda-prev") as HTMLButtonElement;
+        const nextBtn = document.getElementById("agenda-next") as HTMLButtonElement;
+        const dots = document.querySelectorAll<HTMLButtonElement>("#agenda-dots .dot");
+
+        const total = dots.length || 0;
+        let current = 0;
+
+        function goTo(index: number) {
+            current = Math.max(0, Math.min(index, total - 1));
+            track.scrollTo({ left: current * track.offsetWidth, behavior: "smooth" });
+            syncUI();
+        }
+
+        const dayImgs = document.querySelectorAll<HTMLImageElement>("#agenda-day-img .dayImg");
+
+        function syncUI() {
+            dots.forEach((dot, i) => {
+                const active = i === current;
+                dot.classList.toggle("dot--active", active);
+                dot.setAttribute("aria-selected", active ? "true" : "false");
+                dot.setAttribute("tabindex", active ? "0" : "-1");
+            });
+            dayImgs.forEach((img, i) => {
+                img.classList.toggle("dayImg--active", i === current);
+            });
+            prevBtn.disabled = current === 0;
+            nextBtn.disabled = current === total - 1;
+        }
+
+        prevBtn.addEventListener("click", () => goTo(current - 1));
+        nextBtn.addEventListener("click", () => goTo(current + 1));
+        dots.forEach((dot, i) => dot.addEventListener("click", () => goTo(i)));
+
+        const dotsContainer = document.getElementById("agenda-dots");
+        if (dotsContainer) {
+            dotsContainer.addEventListener("keydown", (e: KeyboardEvent) => {
+                if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+                    e.preventDefault();
+                    const next = (current + 1) % total;
+                    goTo(next);
+                    dots[next]?.focus();
+                } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+                    e.preventDefault();
+                    const prev = (current - 1 + total) % total;
+                    goTo(prev);
+                    dots[prev]?.focus();
+                } else if (e.key === "Home") {
+                    e.preventDefault();
+                    goTo(0);
+                    dots[0]?.focus();
+                } else if (e.key === "End") {
+                    e.preventDefault();
+                    goTo(total - 1);
+                    dots[total - 1]?.focus();
+                }
+            });
+        }
+
+        let scrollTimer: ReturnType<typeof setTimeout>;
+        track.addEventListener("scroll", () => {
+            clearTimeout(scrollTimer);
+            scrollTimer = setTimeout(() => {
+                const snapped = Math.round(track.scrollLeft / track.offsetWidth);
+                if (snapped !== current) {
+                    current = snapped;
+                    syncUI();
+                }
+            }, 80);
+        });
+
+        syncUI();
+    };
+
+    document.addEventListener("astro:page-load", initAgenda);
+</script>

@@ -1,0 +1,14 @@
+{
+  "name": "Encuentro Vereda 2027",
+  "short_name": "Encuentro Vereda",
+  "description": "Encuentro Vereda 2027 - Fundación Vereda Clara (sitio de demostración).",
+  "start_url": "./es/",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#b1cccf",
+  "theme_color": "#405950",
+  "icons": [
+    { "src": "favicon-32x32.png", "sizes": "32x32", "type": "image/png" },
+    { "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
+  ]
+}
